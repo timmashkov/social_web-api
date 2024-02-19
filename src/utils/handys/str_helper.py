@@ -12,7 +12,7 @@ class NotEmptyStr(str):
     def __modify_schema__(cls, field_schema: dict[str, str]) -> None:
         update_not_none(
             field_schema,
-            type='string',
+            type="string",
             writeOnly=False,
             minLength=cls.min_length,
             maxLength=cls.max_length,

@@ -1,3 +1,5 @@
+from typing import AsyncGenerator
+
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from core.config import base_config
@@ -10,7 +12,7 @@ class SessionConnector:
             bind=self._engine, autoflush=False, autocommit=False, expire_on_commit=False
         )
 
-    async def scoped_session(self):
+    async def scoped_session(self) -> AsyncGenerator:
         async with self._session_fabric() as session:
             yield session
             await session.close()
