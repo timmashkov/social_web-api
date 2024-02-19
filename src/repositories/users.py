@@ -10,7 +10,9 @@ from schemas.user import UserOut, UserIn
 
 
 class UserRepository:
-    def __init__(self, session: AsyncSession = Depends(connector.scoped_session)) -> None:
+    def __init__(
+        self, session: AsyncSession = Depends(connector.scoped_session)
+    ) -> None:
         self.session = session
         self.model = User
 
@@ -30,14 +32,16 @@ class UserRepository:
     async def create_user(self, data: UserIn):
         stmt = (
             insert(self.model)
-            .values(first_name=data.first_name,
-                    last_name=data.last_name,
-                    age=data.age,
-                    city=data.city,
-                    email=data.email,
-                    phone_number=data.phone_number,
-                    occupation=data.occupation,
-                    bio=data.bio)
+            .values(
+                first_name=data.first_name,
+                last_name=data.last_name,
+                age=data.age,
+                city=data.city,
+                email=data.email,
+                phone_number=data.phone_number,
+                occupation=data.occupation,
+                bio=data.bio,
+            )
             .returning(
                 self.model.id,
                 self.model.first_name,

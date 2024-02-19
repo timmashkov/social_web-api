@@ -15,5 +15,3 @@ class User(Base):
     phone_number: Mapped[str] = mapped_column(String(11), unique=True, nullable=False)
     occupation: Mapped[str] = mapped_column(String(50), unique=False, nullable=True)
     bio: Mapped[str] = mapped_column(Text, unique=False, nullable=True)
-
-

@@ -37,9 +37,8 @@ class UserService:
             return answer
         raise UserNotFound
 
-    async def drop_user(self, user_id: UUID) -> dict[str: str]:
+    async def drop_user(self, user_id: UUID) -> dict[str:str]:
         if await self.user_repo.get_user_by_id(user_id=user_id):
             answer = await self.user_repo.delete_user(user_id=user_id)
             return answer
         raise UserNotFound
-    
