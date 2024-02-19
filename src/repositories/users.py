@@ -27,10 +27,17 @@ class UserRepository:
         result = answer.scalar_one_or_none()
         return result
 
-    async def create_user(self, data: UserIn) -> UserOut:
+    async def create_user(self, data: UserIn):
         stmt = (
             insert(self.model)
-            .values(**data.model_dump())
+            .values(first_name=data.first_name,
+                    last_name=data.last_name,
+                    age=data.age,
+                    city=data.city,
+                    email=data.email,
+                    phone_number=data.phone_number,
+                    occupation=data.occupation,
+                    bio=data.bio)
             .returning(
                 self.model.id,
                 self.model.first_name,
@@ -45,10 +52,10 @@ class UserRepository:
         )
         answer = await self.session.execute(stmt)
         await self.session.commit()
-        result = answer.scalars().first()
+        result = answer.mappings().first()
         return result
 
-    async def update_user(self, data: UserIn, user_id: UUID) -> UserOut:
+    async def update_user(self, data: UserIn, user_id: UUID):
         stmt = (
             update(self.model)
             .where(self.model.id == user_id)
@@ -67,7 +74,7 @@ class UserRepository:
         )
         answer = await self.session.execute(stmt)
         await self.session.commit()
-        result = answer.scalars().first()
+        result = answer.mappings().first()
         return result
 
     async def delete_user(self, user_id: UUID) -> dict[str:str]:
