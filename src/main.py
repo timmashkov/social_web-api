@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 import uvicorn
 
-app_auth = FastAPI(
-    title="Social web auth microservice"
-)
+app_auth = FastAPI(title="Social web auth microservice")
 
 
 @app_auth.get("/")
