@@ -1,15 +1,17 @@
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, SecretStr
 
 
 class UserIn(BaseModel):
     first_name: str
     last_name: str
+    password: Optional[str] = None
     age: int
     city: str
     email: EmailStr
+    token: Optional[str] = None
     phone_number: str
     occupation: Optional[str] = None
     bio: Optional[str] = None

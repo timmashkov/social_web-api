@@ -35,6 +35,7 @@ class UserRepository:
             .values(
                 first_name=data.first_name,
                 last_name=data.last_name,
+                password=data.password,
                 age=data.age,
                 city=data.city,
                 email=data.email,
