@@ -26,7 +26,6 @@ class DeleteJwtToken(BaseModel):
 
 class GetUserById(BaseModel):
     id: UUID
-    first_name: str
-    last_name: str
-    password: SecretStr
+    login: str
+    password: str
     email: EmailStr

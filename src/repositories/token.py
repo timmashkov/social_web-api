@@ -21,14 +21,10 @@ class TokenRepository:
             .values(token=data.token)
             .returning(
                 self.model.id,
-                self.model.first_name,
-                self.model.last_name,
-                self.model.age,
-                self.model.city,
+                self.model.login,
                 self.model.email,
                 self.model.phone_number,
-                self.model.occupation,
-                self.model.bio,
+                self.model.is_verified,
             )
         )
         result = await self.session.execute(stmt)

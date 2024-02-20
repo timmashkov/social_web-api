@@ -30,14 +30,13 @@ class AuthHandler:
         hashed_password = self.encode_password(password=password, salt=salt)
         return hashed_password == encoded_password
 
-    def encode_token(self, user_id, role):
+    def encode_token(self, user_id):
         expiration = 30
         payload = {
             "expiration": datetime.now() + timedelta(minutes=expiration),
             "iat": datetime.now(),
             "scope": "access_token",
             "sub": user_id,
-            "role": role,
         }
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
@@ -63,14 +62,13 @@ class AuthHandler:
         except jwt.InvalidTokenError:
             raise InvalidToken
 
-    def encode_refresh_token(self, user_id, role):
+    def encode_refresh_token(self, user_id):
         exp_refresh_token_hours = 24
         payload = {
             "exp": datetime.now() + timedelta(days=0, hours=exp_refresh_token_hours),
             "iat": datetime.now(),
             "scope": "refresh_token",
             "sub": user_id,
-            "role": role,
         }
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
@@ -81,8 +79,8 @@ class AuthHandler:
                 user_id = payload["sub"]
                 role = payload["role"]
 
-                new_token = self.encode_token(user_id, role)
-                new_refresh = self.encode_refresh_token(user_id, role)
+                new_token = self.encode_token(user_id)
+                new_refresh = self.encode_refresh_token(user_id)
 
                 return UserRefreshToken(
                     access_token=new_token, refresh_token=new_refresh
