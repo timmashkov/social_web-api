@@ -32,27 +32,12 @@ class UserRepository:
     async def create_user(self, data: UserIn):
         stmt = (
             insert(self.model)
-            .values(
-                first_name=data.first_name,
-                last_name=data.last_name,
-                password=data.password,
-                age=data.age,
-                city=data.city,
-                email=data.email,
-                phone_number=data.phone_number,
-                occupation=data.occupation,
-                bio=data.bio,
-            )
+            .values(**data.model_dump())
             .returning(
                 self.model.id,
-                self.model.first_name,
-                self.model.last_name,
-                self.model.age,
-                self.model.city,
+                self.model.login,
                 self.model.email,
                 self.model.phone_number,
-                self.model.occupation,
-                self.model.bio,
             )
         )
         answer = await self.session.execute(stmt)
@@ -67,14 +52,9 @@ class UserRepository:
             .values(**data.model_dump())
             .returning(
                 self.model.id,
-                self.model.first_name,
-                self.model.last_name,
-                self.model.age,
-                self.model.city,
+                self.model.login,
                 self.model.email,
                 self.model.phone_number,
-                self.model.occupation,
-                self.model.bio,
             )
         )
         answer = await self.session.execute(stmt)

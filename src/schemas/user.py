@@ -1,20 +1,16 @@
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, field_validator, SecretStr
+from pydantic import BaseModel, EmailStr, field_validator
 
 
 class UserIn(BaseModel):
-    first_name: str
-    last_name: str
-    password: Optional[str] = None
-    age: int
-    city: str
-    email: EmailStr
+    login: str
+    password: str
     token: Optional[str] = None
+    email: EmailStr
     phone_number: str
-    occupation: Optional[str] = None
-    bio: Optional[str] = None
+    is_verified: Optional[bool] = False
 
     @field_validator("phone_number")
     def check_phone(cls, data):

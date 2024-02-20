@@ -26,7 +26,7 @@ async def post_user(data: UserIn, user_repo=USERS):
     return await user_repo.add_user(data=data)
 
 
-@users.patch("/{user_id}", response_model=UserOut)
+@users.patch("/{user_id}", response_model=None)
 async def patch_user(user_id: UUID, data: UserIn, user_repo=USERS) -> UserOut:
     return await user_repo.change_user(data=data, user_id=user_id)
 

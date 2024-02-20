@@ -1,19 +1,29 @@
-from sqlalchemy import String, Integer, Text
+from typing import TYPE_CHECKING
+
+from sqlalchemy import String, Text, Boolean
 
 from .base import Base
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+if TYPE_CHECKING:
+    from .profile import Profile
 
 
 class User(Base):
     __tablename__ = "user"
 
-    first_name: Mapped[str] = mapped_column(String(50), unique=False, nullable=False)
-    last_name: Mapped[str] = mapped_column(String(50), unique=False, nullable=False)
+    login: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(String(25), unique=False, nullable=False)
     token: Mapped[str] = mapped_column(Text, unique=True, nullable=True)
-    age: Mapped[str] = mapped_column(Integer, unique=False, nullable=False)
-    city: Mapped[str] = mapped_column(String(50), unique=False, nullable=False)
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     phone_number: Mapped[str] = mapped_column(String(11), unique=True, nullable=False)
-    occupation: Mapped[str] = mapped_column(String(50), unique=False, nullable=True)
-    bio: Mapped[str] = mapped_column(Text, unique=False, nullable=True)
+    is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+
+    profile_link: Mapped["Profile"] = relationship(
+        "Profile",
+        back_populates="user_link",
+        cascade="all, delete-orphan",
+        passive_updates=True,
+        passive_deletes=True,
+        single_parent=True,
+    )

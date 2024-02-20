@@ -19,6 +19,11 @@ class CreateJwtToken(BaseModel):
     token: SecretStr
 
 
+class DeleteJwtToken(BaseModel):
+    id: UUID
+    token: SecretStr = None
+
+
 class GetUserById(BaseModel):
     id: UUID
     first_name: str

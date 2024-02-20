@@ -1,12 +1,10 @@
-from uuid import UUID
-
 from fastapi import Depends
 from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import connector
 from models import User
-from schemas.auth import CreateJwtToken, GetUserById
+from schemas.auth import CreateJwtToken, GetUserById, DeleteJwtToken
 
 
 class TokenRepository:
@@ -38,12 +36,32 @@ class TokenRepository:
         answer = result.mappings().first()
         return answer
 
-    async def get_user(self, user_id: UUID) -> GetUserById | None:
-        stmt = select(self.model.id,
-                      self.model.first_name,
-                      self.model.last_name,
-                      self.model.password,
-                      self.model.email).where(self.model.id == user_id)
+    async def get_user(self, cmd: GetUserById) -> GetUserById | None:
+        stmt = select(
+            self.model.id,
+            self.model.first_name,
+            self.model.last_name,
+            self.model.password,
+            self.model.email,
+        ).where(self.model.id == cmd.id)
         result = await self.session.execute(stmt)
         answer = result.scalar_one_or_none()
+        return answer
+
+    async def get_tokens(self, cmd: GetUserById) -> GetUserById | None:
+        stmt = select(self.model.token).where(self.model.id == cmd.id)
+        result = await self.session.execute(stmt)
+        answer = result.scalar_one_or_none()
+        return answer
+
+    async def delete_token(self, cmd: DeleteJwtToken):
+        stmt = (
+            update(self.model.token)
+            .where(self.model.id == cmd.id)
+            .values(token=cmd.token)
+            .returning(self.model.id, self.model.token)
+        )
+        result = await self.session.execute(stmt)
+        await self.session.commit()
+        answer = result.mappings().first()
         return answer
