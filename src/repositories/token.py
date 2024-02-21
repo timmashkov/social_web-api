@@ -42,7 +42,7 @@ class TokenRepository:
             self.model.email,
         ).where(self.model.id == cmd.id)
         result = await self.session.execute(stmt)
-        answer = result.scalar_one_or_none()
+        answer = result.mappings().first()
         return answer
 
     async def get_token(self, cmd: UUID) -> UserToken | None:

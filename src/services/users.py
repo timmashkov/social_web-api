@@ -7,16 +7,34 @@ from sqlalchemy.exc import IntegrityError
 from models import User
 from repositories.users import UserRepository
 from schemas.user import UserIn, UserOut
+from services.auth_handler import AuthHandler
 from utils.exceptions.user_exceptions import UserAlreadyExist, UserNotFound
 
 
 class UserService:
-    def __init__(self, user_repo: UserRepository = Depends(UserRepository)) -> None:
+    def __init__(
+        self,
+        user_repo: UserRepository = Depends(UserRepository),
+        auth_repo: AuthHandler = Depends(AuthHandler),
+    ) -> None:
         self.user_repo = user_repo
+        self.auth_repo = auth_repo
 
     async def add_user(self, data: UserIn) -> UserOut:
         try:
-            answer = await self.user_repo.create_user(data=data)
+            salted_pass = self.auth_repo.encode_password(
+                password=data.password, salt=data.login
+            )
+            answer = await self.user_repo.create_user(
+                data=UserIn(
+                    login=data.login,
+                    password=salted_pass,
+                    token=data.token,
+                    email=data.email,
+                    phone_number=data.phone_number,
+                    is_verified=data.is_verified,
+                )
+            )
             return answer
         except (UniqueViolationError, IntegrityError):
             raise UserAlreadyExist

@@ -1,5 +1,6 @@
 import hashlib
-from datetime import datetime, timedelta
+import json
+from datetime import datetime, timedelta, timezone
 
 import jwt
 
@@ -33,11 +34,14 @@ class AuthHandler:
     def encode_token(self, user_id):
         expiration = 30
         payload = {
-            "expiration": datetime.now() + timedelta(minutes=expiration),
-            "iat": datetime.now(),
+            "expiration": json.dumps(
+                datetime.now(timezone.utc) + timedelta(minutes=expiration), default=str
+            ),
+            "iat": json.dumps(datetime.now(timezone.utc), default=str),
             "scope": "access_token",
-            "sub": user_id,
+            "sub": json.dumps(user_id, default=str),
         }
+        print(payload)
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
     def decode_token(self, token):
@@ -65,10 +69,14 @@ class AuthHandler:
     def encode_refresh_token(self, user_id):
         exp_refresh_token_hours = 24
         payload = {
-            "exp": datetime.now() + timedelta(days=0, hours=exp_refresh_token_hours),
-            "iat": datetime.now(),
+            "exp": json.dumps(
+                datetime.now(timezone.utc)
+                + timedelta(days=0, hours=exp_refresh_token_hours),
+                default=str,
+            ),
+            "iat": json.dumps(datetime.now(timezone.utc), default=str),
             "scope": "refresh_token",
-            "sub": user_id,
+            "sub": json.dumps(user_id, default=str),
         }
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
@@ -77,8 +85,6 @@ class AuthHandler:
             payload = jwt.decode(refresh_token, self.secret, algorithms=["HS256"])
             if payload["scope"] == "refresh_token":
                 user_id = payload["sub"]
-                role = payload["role"]
-
                 new_token = self.encode_token(user_id)
                 new_refresh = self.encode_refresh_token(user_id)
 

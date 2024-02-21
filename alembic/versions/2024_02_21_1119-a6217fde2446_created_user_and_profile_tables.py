@@ -1,8 +1,8 @@
 """created user and profile tables
 
-Revision ID: 06f5232ab05f
+Revision ID: a6217fde2446
 Revises: 
-Create Date: 2024-02-20 21:50:51.061534
+Create Date: 2024-02-21 11:19:10.451819
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "06f5232ab05f"
+revision: str = "a6217fde2446"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -24,7 +24,7 @@ def upgrade() -> None:
     op.create_table(
         "user",
         sa.Column("login", sa.String(length=20), nullable=False),
-        sa.Column("password", sa.String(length=25), nullable=False),
+        sa.Column("password", sa.Text(), nullable=False),
         sa.Column("token", sa.Text(), nullable=True),
         sa.Column("email", sa.String(length=50), nullable=False),
         sa.Column("phone_number", sa.String(length=11), nullable=False),
