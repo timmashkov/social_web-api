@@ -1,10 +1,12 @@
+from uuid import UUID
+
 from fastapi import Depends
 from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import connector
 from models import User
-from schemas.auth import CreateJwtToken, GetUserById, DeleteJwtToken
+from schemas.auth import CreateJwtToken, GetUserById, DeleteJwtToken, UserToken
 
 
 class TokenRepository:
@@ -35,8 +37,7 @@ class TokenRepository:
     async def get_user(self, cmd: GetUserById) -> GetUserById | None:
         stmt = select(
             self.model.id,
-            self.model.first_name,
-            self.model.last_name,
+            self.model.login,
             self.model.password,
             self.model.email,
         ).where(self.model.id == cmd.id)
@@ -44,8 +45,8 @@ class TokenRepository:
         answer = result.scalar_one_or_none()
         return answer
 
-    async def get_tokens(self, cmd: GetUserById) -> GetUserById | None:
-        stmt = select(self.model.token).where(self.model.id == cmd.id)
+    async def get_token(self, cmd: UUID) -> UserToken | None:
+        stmt = select(self.model.token).where(self.model.id == cmd)
         result = await self.session.execute(stmt)
         answer = result.scalar_one_or_none()
         return answer

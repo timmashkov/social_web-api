@@ -29,3 +29,11 @@ class GetUserById(BaseModel):
     login: str
     password: str
     email: EmailStr
+
+
+class UserToken(BaseModel):
+    token: SecretStr
+
+
+class UserId(BaseModel):
+    id: UUID
