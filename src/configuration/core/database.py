@@ -2,7 +2,7 @@ from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from core.config import base_config
+from configuration.core.config import base_config
 
 
 class SessionConnector:

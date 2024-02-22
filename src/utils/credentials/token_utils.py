@@ -1,7 +1,7 @@
 from fastapi import Security
 from fastapi.security import HTTPBearer, APIKeyHeader, HTTPAuthorizationCredentials
 
-from core.config import base_config
+from configuration.core.config import base_config
 from schemas.auth import UserAccessToken
 from services.auth_handler import AuthHandler
 from utils.exceptions.auth_exceptions import InvalidCredentials, Unauthorized

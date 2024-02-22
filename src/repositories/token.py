@@ -4,7 +4,7 @@ from fastapi import Depends
 from sqlalchemy import update, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.database import connector
+from configuration.core.database import connector
 from models import User
 from schemas.auth import UserToken, UserJwtToken, GetUserByLogin
 

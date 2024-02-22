@@ -1,10 +1,10 @@
 import hashlib
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 import jwt
 
-from core.config import base_config
+from configuration.core.config import base_config
 from schemas.auth import UserRefreshToken
 from utils.exceptions.auth_exceptions import (
     InvalidScopeToken,

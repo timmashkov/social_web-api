@@ -1,4 +1,4 @@
-from core.base_exception import BaseAPIException
+from configuration.core.base_exception import BaseAPIException
 from fastapi import status
 
 

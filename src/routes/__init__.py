@@ -1,3 +1,4 @@
+__all__ = "main_router"
 from fastapi import APIRouter
 from .users import users as users_router
 from .auth import auth_route
