@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 import uvicorn
-from starlette.middleware.cors import CORSMiddleware
 
 from configuration.server import ApiServer
 from routes import main_router
