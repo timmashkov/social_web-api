@@ -55,7 +55,7 @@ class TokenRepository:
         stmt = (
             update(self.model)
             .where(self.model.id == cmd)
-            .values(token='')
+            .values(token="")
             .returning(self.model.id, self.model.token)
         )
         result = await self.session.execute(stmt)

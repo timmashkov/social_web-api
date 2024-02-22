@@ -11,8 +11,7 @@ class UserTokens(UserAccessToken):
     refresh_token: str
 
 
-class UserRefreshToken(UserTokens):
-    ...
+class UserRefreshToken(UserTokens): ...
 
 
 class UserToken(BaseModel):

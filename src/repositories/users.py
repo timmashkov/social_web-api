@@ -25,11 +25,10 @@ class UserRepository:
     async def get_user_by_id(self, user_id: UUID) -> UserOut | None:
         stmt = select(self.model).where(self.model.id == user_id)
         answer = await self.session.execute(stmt)
-        await self.session.commit()
         result = answer.scalar_one_or_none()
         return result
 
-    async def create_user(self, data: UserIn):
+    async def create_user(self, data: UserIn) -> UserOut | None:
         stmt = (
             insert(self.model)
             .values(**data.model_dump())
@@ -45,7 +44,7 @@ class UserRepository:
         result = answer.mappings().first()
         return result
 
-    async def update_user(self, data: UserIn, user_id: UUID):
+    async def update_user(self, data: UserIn, user_id: UUID) -> UserOut | None:
         stmt = (
             update(self.model)
             .where(self.model.id == user_id)

@@ -5,7 +5,9 @@ from fastapi import Depends
 from repositories.token import TokenRepository
 from schemas.auth import (
     UserId,
-    UserRefreshToken, UserJwtToken, GetUserByLogin,
+    UserRefreshToken,
+    UserJwtToken,
+    GetUserByLogin,
 )
 from services.auth_handler import AuthHandler
 from utils.exceptions.auth_exceptions import Unauthorized
@@ -41,8 +43,7 @@ class AuthService:
         if not token:
             raise Unauthorized
         if token == refresh_token:
-            result = await self.repository.delete_token(
-                cmd=user_id[1:-1])
+            result = await self.repository.delete_token(cmd=user_id[1:-1])
             return result
         raise Unauthorized
 
