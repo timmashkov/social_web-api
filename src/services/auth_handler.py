@@ -32,21 +32,18 @@ class AuthHandler:
         return hashed_password == encoded_password
 
     def encode_token(self, user_id):
-        expiration = 30
+        expiration = 3600
         payload = {
-            "expiration": json.dumps(
-                datetime.now(timezone.utc) + timedelta(minutes=expiration), default=str
-            ),
-            "iat": json.dumps(datetime.now(timezone.utc), default=str),
+            "expiration": int(datetime.now().timestamp() + expiration),
+            "iat": int(datetime.now().timestamp()),
             "scope": "access_token",
             "sub": json.dumps(user_id, default=str),
         }
-        print(payload)
         return jwt.encode(payload, self.secret, algorithm="HS256")
 
     def decode_token(self, token):
         try:
-            payload = jwt.encode(token, self.secret, algorithms=["HS256"])
+            payload = jwt.decode(token, self.secret, algorithms=["HS256"])
             if payload["scope"] == "access_token":
                 return payload["sub"]
             raise InvalidScopeToken
@@ -56,25 +53,16 @@ class AuthHandler:
             raise InvalidToken
 
     def decode_refresh_token(self, token):
-        try:
-            payload = jwt.decode(token, self.secret, algorithms=["HS256"])
-            if payload["scope"] == "refresh_token":
-                return payload["sub"]
-            raise InvalidScopeToken
-        except jwt.ExpiredSignatureError:
-            raise TokenExpired
-        except jwt.InvalidTokenError:
-            raise InvalidToken
+        payload = jwt.decode(token, self.secret, algorithms=["HS256"])
+        if payload["scope"] == "refresh_token":
+            return payload["sub"]
+        raise InvalidScopeToken
 
     def encode_refresh_token(self, user_id):
-        exp_refresh_token_hours = 24
+        exp_refresh_token_sec = 86400
         payload = {
-            "exp": json.dumps(
-                datetime.now(timezone.utc)
-                + timedelta(days=0, hours=exp_refresh_token_hours),
-                default=str,
-            ),
-            "iat": json.dumps(datetime.now(timezone.utc), default=str),
+            "exp": int(datetime.now().timestamp() + exp_refresh_token_sec),
+            "iat": int(datetime.now().timestamp()),
             "scope": "refresh_token",
             "sub": json.dumps(user_id, default=str),
         }

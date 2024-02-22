@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.database import connector
 from models import User
-from schemas.auth import CreateJwtToken, GetUserById, DeleteJwtToken, UserToken
+from schemas.auth import UserToken, UserJwtToken, GetUserByLogin
 
 
 class TokenRepository:
@@ -16,7 +16,7 @@ class TokenRepository:
         self.session = session
         self.model = User
 
-    async def update_token(self, data: CreateJwtToken):
+    async def update_token(self, data: UserJwtToken):
         stmt = (
             update(self.model)
             .where(self.model.id == data.id)
@@ -34,13 +34,13 @@ class TokenRepository:
         answer = result.mappings().first()
         return answer
 
-    async def get_user(self, cmd: GetUserById) -> GetUserById | None:
+    async def get_user(self, cmd: GetUserByLogin) -> GetUserByLogin | None:
         stmt = select(
             self.model.id,
             self.model.login,
             self.model.password,
             self.model.email,
-        ).where(self.model.id == cmd.id)
+        ).where(self.model.login == cmd.login)
         result = await self.session.execute(stmt)
         answer = result.mappings().first()
         return answer
@@ -51,11 +51,11 @@ class TokenRepository:
         answer = result.scalar_one_or_none()
         return answer
 
-    async def delete_token(self, cmd: DeleteJwtToken):
+    async def delete_token(self, cmd: str):
         stmt = (
-            update(self.model.token)
-            .where(self.model.id == cmd.id)
-            .values(token=cmd.token)
+            update(self.model)
+            .where(self.model.id == cmd)
+            .values(token='')
             .returning(self.model.id, self.model.token)
         )
         result = await self.session.execute(stmt)

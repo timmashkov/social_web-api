@@ -4,36 +4,30 @@ from pydantic import BaseModel, SecretStr, EmailStr
 
 
 class UserAccessToken(BaseModel):
-    access_token: SecretStr
+    access_token: str
 
 
 class UserTokens(UserAccessToken):
-    refresh_token: SecretStr
+    refresh_token: str
 
 
-class UserRefreshToken(UserTokens): ...
-
-
-class CreateJwtToken(BaseModel):
-    id: UUID
-    token: SecretStr
-
-
-class DeleteJwtToken(BaseModel):
-    id: UUID
-    token: SecretStr = None
-
-
-class GetUserById(BaseModel):
-    id: UUID
-    login: str
-    password: str
-    email: EmailStr
+class UserRefreshToken(UserTokens):
+    ...
 
 
 class UserToken(BaseModel):
-    token: SecretStr
+    token: str
 
 
 class UserId(BaseModel):
     id: UUID
+
+
+class UserJwtToken(UserId, UserToken):
+    id: UUID | str
+    token: str = None
+
+
+class GetUserByLogin(BaseModel):
+    login: str
+    password: str
