@@ -14,16 +14,14 @@ auth_handler = AuthHandler()
 
 
 async def get_token_key(
-        api_key_header: str = Security(api_x_key_header),
+    api_key_header: str = Security(api_x_key_header),
 ):
     value = base_config.X_API_TOKEN
     if api_key_header != value:
         raise InvalidCredentials
 
 
-async def check_jwt(
-        credentials: HTTPAuthorizationCredentials = Security(jwt_header)
-):
+async def check_jwt(credentials: HTTPAuthorizationCredentials = Security(jwt_header)):
     token = credentials.credentials
     if not auth_handler.decode_token(token):
         raise Unauthorized
