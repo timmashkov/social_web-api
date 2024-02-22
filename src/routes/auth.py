@@ -8,19 +8,17 @@ from utils.credentials.token_utils import jwt_header
 auth_route = APIRouter(prefix="/auth")
 
 
-AUTH = AuthService()
+AUTH = Depends(AuthService)
 
 
 @auth_route.post("/login")
-async def login_user(
-    auth_in: GetUserByLogin, auth_service: AuthService = Depends(AuthService)
-):
+async def login_user(auth_in: GetUserByLogin, auth_service: AuthService = AUTH):
     return await auth_service.login(data=auth_in)
 
 
 @auth_route.post("/logout")
 async def logout_user(
-    auth_service: AuthService = Depends(AuthService),
+    auth_service: AuthService = AUTH,
     credentials: HTTPAuthorizationCredentials = Security(jwt_header),
 ):
     token = credentials.credentials
@@ -29,7 +27,7 @@ async def logout_user(
 
 @auth_route.get("/refresh_token")
 async def refresh_user_token(
-    auth_service: AuthService = Depends(AuthService),
+    auth_service: AuthService = AUTH,
     credentials: HTTPAuthorizationCredentials = Security(jwt_header),
 ):
     token = credentials.credentials
