@@ -19,7 +19,7 @@ class UserToken(BaseModel):
 
 
 class UserId(BaseModel):
-    id: UUID
+    id: UUID | str
 
 
 class UserJwtToken(UserId, UserToken):

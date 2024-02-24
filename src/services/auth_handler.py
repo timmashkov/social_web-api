@@ -44,7 +44,8 @@ class AuthHandler:
     def decode_token(self, token):
         try:
             payload = jwt.decode(token, self.secret, algorithms=["HS256"])
-            if payload["scope"] == "access_token":
+            if payload["scope"] == "refresh_token":
+                print(True)
                 return payload["sub"]
             raise InvalidScopeToken
         except jwt.ExpiredSignatureError:

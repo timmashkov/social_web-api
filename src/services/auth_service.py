@@ -49,12 +49,11 @@ class AuthService:
 
     async def is_auth(self, refresh_token):
         user_id = auth.decode_token(refresh_token)
-        exist_token = await self.repository.get_token(cmd=user_id)
+        exist_token = await self.repository.get_token(cmd=user_id[1:-1])
         if not exist_token:
             raise Unauthorized
         try:
-            token = exist_token.tokens.get_secret_value()
-            if token == refresh_token:
+            if exist_token == refresh_token:
                 return UserId(id=user_id)
             else:
                 raise Unauthorized

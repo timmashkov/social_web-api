@@ -32,3 +32,12 @@ async def refresh_user_token(
 ):
     token = credentials.credentials
     return await auth_service.refresh_token(refresh_token=token)
+
+
+@auth_route.get("/check_auth")
+async def check_auth(
+    auth_service: AuthService = AUTH,
+    credentials: HTTPAuthorizationCredentials = Security(jwt_header),
+):
+    token = credentials.credentials
+    return await auth_service.is_auth(refresh_token=token)
