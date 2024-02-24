@@ -4,18 +4,18 @@ import sys
 from fastapi import FastAPI
 import uvicorn
 
-from admin_app.admin_panel import flask_app
+from admin_app.admin import admin
 from configuration.server import ApiServer
 from routes import main_router
 
 
 def start_app() -> FastAPI:
 
-    app_auth = FastAPI(title="Social web auth microservice")
+    app = ApiServer.app_auth
 
-    app_auth.include_router(router=main_router)
+    app.include_router(router=main_router)
 
-    return ApiServer(app_auth, flask_app).get_app()
+    return ApiServer(app, admin).get_app()
 
 
 if __name__ == "__main__":

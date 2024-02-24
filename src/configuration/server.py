@@ -1,20 +1,20 @@
 from typing import TypeVar
 
 from fastapi import FastAPI
-from flask import Flask
-from fastapi.middleware.wsgi import WSGIMiddleware
+from sqladmin import Admin
 
 FastAPIInstance = TypeVar("FastAPIInstance", bound="FastAPI")
 
 
 class ApiServer:
-    def __init__(self, app: FastAPI, flask_app: Flask):
+    app_auth = FastAPI(title="Social web auth microservice")
+
+    def __init__(self, app: FastAPI, admin_panel: Admin):
         self.__app = app
-        self._create_flask = flask_app
+        self.__admin_panel = admin_panel
 
     def get_app(self) -> FastAPIInstance:
         return self.__app
 
-    @staticmethod
-    def _register_flask_app(app: FastAPIInstance, flask_app: Flask):
-        app.mount('/admin_panel', WSGIMiddleware(flask_app))
+    def get_admin(self):
+        return self.__admin_panel

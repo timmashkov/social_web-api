@@ -1,72 +1,31 @@
-from flask import redirect, url_for
-from flask_admin import expose
-from flask_admin.contrib.sqla import ModelView
-from flask_login import current_user, login_required
+from sqladmin import ModelView
+
+from models import User, Profile
 
 
-class UserModelView(ModelView):
-    column_list = ("login", "email", "phone_number", "is_verified")
-    details_modal = True
-    can_create = False
+class UserAdmin(ModelView, model=User):
+    column_list = [User.id, User.login, User.email, User.phone_number, User.is_verified]
+    column_details_exclude_list = [User.password, User.token, User.profile_link]
+    column_searchable_list = [User.login]
+    column_sortable_list = [User.id]
+    column_default_sort = [(User.email, True), (User.login, False)]
+
+    can_create = True
+    can_edit = True
     can_delete = False
     can_view_details = True
-    column_default_sort = 'is_verified'
-    column_filters = ('login', 'is_verified')
-    page_size = 10
-    column_editable_list = ('is_verified', 'login')
-    column_details_list = ("login", "email", "phone_number", "is_verified")
-    form_widget_args = {
-        'login': {
-            'readonly': True
-        },
-        'email': {
-            'readonly': True
-        },
-        'phone_number': {
-            'readonly': True,
-            'disabled': True
-        },
-        'is_verified': {
-            'readonly': True
-        },
-        }
-
-    @expose("/")
-    def index_view(self):
-        if not current_user.is_authenticated:
-            return redirect(url_for("login"))
-        try:
-            return super(UserModelView, self).index_view()
-        except Exception as e:
-            print("Error", e)
-
-    @login_required
-    def get_list_row_actions(self):
-        actions = super(UserModelView, self).get_list_row_actions()
-        if len(actions) > 1:
-            actions.pop()
-        return actions
+    can_export = True
 
 
-class UserTypeModelView(ModelView):
+class ProfileAdmin(ModelView, model=Profile):
+    column_list = [Profile.id, Profile.first_name, Profile.last_name, Profile.age, Profile.city,
+                   Profile.occupation, Profile.bio]
+    column_searchable_list = [Profile.first_name]
+    column_sortable_list = [Profile.age]
+    column_default_sort = [(Profile.id, True), (Profile.first_name, False)]
 
-    @expose('/')
-    def index_view(self):
-        if not current_user.is_authenticated:
-            return redirect(url_for('login'))
-        try:
-            return super(UserTypeModelView, self).index_view()
-        except Exception as e:
-            print('Error', e)
-
-    @login_required
-    def update_model(self, form, model):
-        super().update_model(form, model)
-
-    @login_required
-    def create_model(self, form):
-        super().create_model(form)
-
-    @login_required
-    def delete_model(self, model):
-        super().delete_model(model)
+    can_create = True
+    can_edit = True
+    can_delete = False
+    can_view_details = True
+    can_export = True
