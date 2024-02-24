@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from .users import User
+    from .friends import Friend
 
 
 class Profile(Base):
@@ -20,9 +21,12 @@ class Profile(Base):
     bio: Mapped[str] = mapped_column(Text, unique=False, nullable=True)
 
     user_id: Mapped[UUID] = mapped_column(
-        ForeignKey("user.id", ondelete="CASCADE"), unique=True, nullable=True
+        ForeignKey("user.id", ondelete="CASCADE"), unique=True, nullable=False
     )
     user_link: Mapped["User"] = relationship(
         "User",
         back_populates="profile_link",
+    )
+    friends: Mapped[list["Friend"]] = relationship(
+        "Profile", secondary=Friend.__table__, back_populates="profile_link"
     )

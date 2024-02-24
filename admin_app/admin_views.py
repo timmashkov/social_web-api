@@ -18,8 +18,15 @@ class UserAdmin(ModelView, model=User):
 
 
 class ProfileAdmin(ModelView, model=Profile):
-    column_list = [Profile.id, Profile.first_name, Profile.last_name, Profile.age, Profile.city,
-                   Profile.occupation, Profile.bio]
+    column_list = [
+        Profile.id,
+        Profile.first_name,
+        Profile.last_name,
+        Profile.age,
+        Profile.city,
+        Profile.occupation,
+        Profile.bio,
+    ]
     column_searchable_list = [Profile.first_name]
     column_sortable_list = [Profile.age]
     column_default_sort = [(Profile.id, True), (Profile.first_name, False)]

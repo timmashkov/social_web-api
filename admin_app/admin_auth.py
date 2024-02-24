@@ -1,4 +1,3 @@
-from fastapi import Depends
 from sqladmin.authentication import AuthenticationBackend
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
@@ -13,7 +12,9 @@ class AdminAuth(AuthenticationBackend):
         form = await request.form()
         username, password = form["username"], form["password"]
 
-        answer = await verify_user(cmd=GetUserByLogin(login=username, password=password))
+        answer = await verify_user(
+            cmd=GetUserByLogin(login=username, password=password)
+        )
         if answer:
             token = answer["refresh_token"]
             request.session.update({"token": token})
