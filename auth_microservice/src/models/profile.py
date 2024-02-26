@@ -28,5 +28,8 @@ class Profile(Base):
         back_populates="profile_link",
     )
     friends: Mapped[list["Friend"]] = relationship(
-        "Profile", secondary=Friend.__table__, back_populates="profile_link"
+        "Profile",
+        secondary="friend",
+        primaryjoin="Profile.id==Friend.profile_id",
+        secondaryjoin="Profile.id==Friend.friend_id"
     )

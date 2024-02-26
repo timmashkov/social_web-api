@@ -4,7 +4,7 @@ import sys
 from fastapi import FastAPI
 import uvicorn
 
-from admin_app.admin import admin
+from auth_microservice.admin_app.admin import admin
 from configuration.server import ApiServer
 from routes import main_router
 

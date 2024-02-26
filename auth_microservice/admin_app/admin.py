@@ -1,7 +1,7 @@
 from sqladmin import Admin
 
-from admin_app.admin_auth import auth_backend
-from admin_app.admin_views import UserAdmin, ProfileAdmin
+from auth_microservice.admin_app.admin_auth import auth_backend
+from auth_microservice.admin_app.admin_views import UserAdmin, ProfileAdmin
 from configuration.core.database import connector
 from configuration.server import ApiServer
 

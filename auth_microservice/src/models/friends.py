@@ -10,11 +10,11 @@ if TYPE_CHECKING:
 
 class Friend(Base):
     __tablename__ = "friend"
-    __table_args__ = [
-        UniqueConstraint("user_id", "friend_id", name="idx_unique_profile_friend")
-    ]
+    __table_args__ = (
+        UniqueConstraint("profile_id", "friend_id", name="idx_unique_profile_friend"),
+    )
 
     profile_id: Mapped[UUID] = mapped_column(ForeignKey("profile.id"))
     friend_id: Mapped[UUID] = mapped_column(ForeignKey("profile.id"))
 
-    profile_link: Mapped["Profile"] = relationship(back_populates="friends")
+    #profile_link: Mapped["Profile"] = relationship(back_populates="friends")
