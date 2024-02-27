@@ -10,3 +10,8 @@ class ProfileNotFound(BaseAPIException):
 class ProfileAlreadyExist(BaseAPIException):
     status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
     message = "Profile already exist"
+
+
+class SelfFriendException(BaseAPIException):
+    status_code = status.HTTP_400_BAD_REQUEST
+    message = "You can't friend yourself"

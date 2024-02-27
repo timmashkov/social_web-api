@@ -11,6 +11,7 @@ class ProfileIn(BaseModel):
     city: str
     occupation: Optional[str] = None
     bio: Optional[str] = None
+    user_id: UUID | str
 
     @field_validator("age")
     def check_age(cls, data):
@@ -21,3 +22,13 @@ class ProfileIn(BaseModel):
 
 class ProfileOut(ProfileIn):
     id: UUID
+
+
+class MatingSchema(BaseModel):
+    id: UUID
+    first_name: str
+    last_name: str
+
+
+class FriendsOut(ProfileOut):
+    friends: list[ProfileOut]

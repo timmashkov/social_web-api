@@ -64,7 +64,9 @@ def upgrade() -> None:
             ["profile.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("profile_id", "friend_id", name="idx_unique_profile_friend"),
+        sa.UniqueConstraint(
+            "profile_id", "friend_id", name="idx_unique_profile_friend"
+        ),
     )
     # ### end Alembic commands ###
 

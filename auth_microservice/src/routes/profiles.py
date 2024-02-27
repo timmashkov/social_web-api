@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from models import Profile
-from schemas.profile import ProfileOut, ProfileIn
+from schemas.profile import ProfileOut, ProfileIn, MatingSchema, FriendsOut
 from services.profiles import ProfileService
 
 profile_router = APIRouter(prefix="/profile")
@@ -42,3 +42,19 @@ async def del_profile(
     profile_id: UUID, profile_repo: ProfileService = PROFILES
 ) -> dict[str, str]:
     return await profile_repo.drop_profile(profile_id=profile_id)
+
+
+@profile_router.post("/", response_model=None)
+async def add_friend(
+    friend_in: MatingSchema,
+    friend_new: MatingSchema,
+    profile_repo: ProfileService = PROFILES,
+):
+    return await profile_repo.follow(friend_in=friend_in, friend_new=friend_new)
+
+
+@profile_router.get("/friends/{profile_id}", response_model=FriendsOut)
+async def show_friends(
+    profile_id: UUID | str, profile_repo: ProfileService = PROFILES
+) -> FriendsOut:
+    return await profile_repo.get_friends(profile_id=profile_id)

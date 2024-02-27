@@ -16,5 +16,3 @@ class Friend(Base):
 
     profile_id: Mapped[UUID] = mapped_column(ForeignKey("profile.id"))
     friend_id: Mapped[UUID] = mapped_column(ForeignKey("profile.id"))
-
-    #profile_link: Mapped["Profile"] = relationship(back_populates="friends")

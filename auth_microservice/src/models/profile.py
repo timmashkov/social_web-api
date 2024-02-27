@@ -27,9 +27,9 @@ class Profile(Base):
         "User",
         back_populates="profile_link",
     )
-    friends: Mapped[list["Friend"]] = relationship(
+    friends: Mapped[list["Profile"]] = relationship(
         "Profile",
         secondary="friend",
         primaryjoin="Profile.id==Friend.profile_id",
-        secondaryjoin="Profile.id==Friend.friend_id"
+        secondaryjoin="Profile.id==Friend.friend_id",
     )
