@@ -53,4 +53,13 @@ class ProfileService:
             raise ProfileNotFound
         if not await self.prof_repo.get_profile_by_id(profile_id=data.friend_id):
             raise FriendNotExist
+        print(2)
         return await self.prof_repo.add_friends(cmd=data)
+
+    async def unfollow(self, data: MatingSchema):
+        if not await self.prof_repo.get_profile_by_id(profile_id=data.profile_id):
+            raise ProfileNotFound
+        if not await self.prof_repo.get_profile_by_id(profile_id=data.friend_id):
+            raise FriendNotExist
+        print(1)
+        return await self.prof_repo.delete_friends(cmd=data)

@@ -44,12 +44,20 @@ async def del_profile(
     return await profile_repo.drop_profile(profile_id=profile_id)
 
 
-@profile_router.post("/", response_model=None)
+@profile_router.post("/add", response_model=None)
 async def add_friend(
     data: MatingSchema,
     profile_repo: ProfileService = PROFILES,
 ):
     return await profile_repo.follow(data=data)
+
+
+@profile_router.post("/del", response_model=None)
+async def delete_friend(
+    data: MatingSchema,
+    profile_repo: ProfileService = PROFILES,
+):
+    return await profile_repo.unfollow(data=data)
 
 
 @profile_router.get("/friends/{profile_id}", response_model=FriendsOut)

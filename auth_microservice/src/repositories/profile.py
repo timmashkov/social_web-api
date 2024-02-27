@@ -95,6 +95,21 @@ class ProfileRepository:
         await self.session.commit()
         return {"message": "Friend has been added"}
 
+    async def delete_friends(self, cmd: MatingSchema):
+        query_profile = (
+            select(self.model)
+            .options(joinedload(self.model.friends))
+            .where(self.model.id == cmd.profile_id)
+        )
+        query_friend = select(self.model).where(self.model.id == cmd.friend_id)
+        answer_profile = await self.session.execute(query_profile)
+        answer_friend = await self.session.execute(query_friend)
+        profile = answer_profile.scalars().first()
+        friend = answer_friend.scalars().first()
+        profile.friends.remove(friend)
+        await self.session.commit()
+        return {"message": "Friend has been removed"}
+
     async def get_profile_with_friends(self, profile_id: UUID) -> FriendsOut | None:
         stmt = (
             select(self.model)

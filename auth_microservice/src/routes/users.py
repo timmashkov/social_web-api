@@ -22,7 +22,7 @@ async def show_user(user_id: UUID, user_repo: UserService = USERS) -> UserOut:
 
 
 @users.post("/", response_model=None)
-async def post_user(data: UserIn, user_repo: UserService = USERS):
+async def registration(data: UserIn, user_repo: UserService = USERS):
     return await user_repo.add_user(data=data)
 
 
