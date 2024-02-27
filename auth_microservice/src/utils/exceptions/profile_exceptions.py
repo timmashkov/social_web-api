@@ -12,6 +12,6 @@ class ProfileAlreadyExist(BaseAPIException):
     message = "Profile already exist"
 
 
-class SelfFriendException(BaseAPIException):
-    status_code = status.HTTP_400_BAD_REQUEST
-    message = "You can't friend yourself"
+class FriendNotExist(BaseAPIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    message = "Friend not found"

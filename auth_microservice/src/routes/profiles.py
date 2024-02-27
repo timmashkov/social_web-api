@@ -46,11 +46,10 @@ async def del_profile(
 
 @profile_router.post("/", response_model=None)
 async def add_friend(
-    friend_in: MatingSchema,
-    friend_new: MatingSchema,
+    data: MatingSchema,
     profile_repo: ProfileService = PROFILES,
 ):
-    return await profile_repo.follow(friend_in=friend_in, friend_new=friend_new)
+    return await profile_repo.follow(data=data)
 
 
 @profile_router.get("/friends/{profile_id}", response_model=FriendsOut)

@@ -10,7 +10,7 @@ from schemas.profile import ProfileOut, ProfileIn, MatingSchema, FriendsOut
 from utils.exceptions.profile_exceptions import (
     ProfileNotFound,
     ProfileAlreadyExist,
-    SelfFriendException,
+    FriendNotExist,
 )
 
 
@@ -48,9 +48,9 @@ class ProfileService:
     async def get_friends(self, profile_id: UUID):
         return await self.prof_repo.get_profile_with_friends(profile_id=profile_id)
 
-    async def follow(
-        self, friend_in: MatingSchema, friend_new: MatingSchema
-    ) -> FriendsOut:
-        return await self.prof_repo.add_friends(
-            friend_in=friend_in, friend_new=friend_new
-        )
+    async def follow(self, data: MatingSchema):
+        if not await self.prof_repo.get_profile_by_id(profile_id=data.profile_id):
+            raise ProfileNotFound
+        if not await self.prof_repo.get_profile_by_id(profile_id=data.friend_id):
+            raise FriendNotExist
+        return await self.prof_repo.add_friends(cmd=data)
