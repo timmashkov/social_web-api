@@ -10,6 +10,8 @@ from schemas.user import UserOut, UserIn
 
 
 class UserRepository:
+    """Репозиторий с крудами для юзера"""
+
     def __init__(
         self, session: AsyncSession = Depends(connector.scoped_session)
     ) -> None:

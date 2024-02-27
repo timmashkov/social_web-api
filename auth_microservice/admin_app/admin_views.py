@@ -26,7 +26,7 @@ class ProfileAdmin(ModelView, model=Profile):
         Profile.city,
         Profile.occupation,
         Profile.bio,
-        Profile.friends
+        Profile.friends,
     ]
     column_searchable_list = [Profile.first_name]
     column_sortable_list = [Profile.age]

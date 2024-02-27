@@ -3,7 +3,7 @@ from pydantic.v1.validators import constr_length_validator
 
 
 class NotEmptyStr(str):
-    """Checks string length"""
+    """Проверяет длину строки"""
 
     min_length: int | None = 1
     max_length: int | None = None

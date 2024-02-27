@@ -10,10 +10,15 @@ from services.auth_handler import AuthHandler
 from utils.exceptions.auth_exceptions import Unauthorized
 from utils.exceptions.user_exceptions import UserNotFound, WrongPassword
 
+"""
+Вспомогательные фичи для админки, для игзбегания DI
+"""
+
 auth = AuthHandler()
 
 
 async def find_user(data: GetUserByLogin) -> GetUserByLogin | None:
+    """Поиск юзера"""
     async with connector.engine.connect() as session:
         stmt = select(
             User.id,
@@ -27,6 +32,7 @@ async def find_user(data: GetUserByLogin) -> GetUserByLogin | None:
 
 
 async def change_token(data: UserJwtToken):
+    """Смена токена"""
     async with connector.engine.connect() as session:
         stmt = (
             update(User)
@@ -47,6 +53,7 @@ async def change_token(data: UserJwtToken):
 
 
 async def find_token(cmd: UUID) -> UserToken | None:
+    """Поиск токена"""
     async with connector.engine.connect() as session:
         stmt = select(User.token).where(User.id == cmd)
         result = await session.execute(stmt)
@@ -55,6 +62,7 @@ async def find_token(cmd: UUID) -> UserToken | None:
 
 
 async def verify_user(cmd: GetUserByLogin) -> dict[str, str] | dict[str, Any]:
+    """подтверждение юзера"""
     user = await find_user(data=cmd)
     if not user:
         raise UserNotFound
@@ -71,6 +79,7 @@ async def verify_user(cmd: GetUserByLogin) -> dict[str, str] | dict[str, Any]:
 
 
 async def check_auth(refresh_token) -> UserId:
+    """Подтверджение аутентификации"""
     user_id = auth.decode_token(refresh_token)
     exist_token = await find_token(cmd=user_id[1:-1])
     if not exist_token:

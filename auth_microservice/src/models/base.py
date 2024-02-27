@@ -5,6 +5,8 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
+    """Базовый класс для таблиц"""
+
     __abstract__ = True
 
     id: Mapped[UUID] = mapped_column(

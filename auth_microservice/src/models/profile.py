@@ -7,10 +7,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
     from .users import User
-    from .friends import Friend
 
 
 class Profile(Base):
+    """Таблица профиля"""
+
     __tablename__ = "profile"
 
     first_name: Mapped[str] = mapped_column(String(50), unique=False, nullable=False)

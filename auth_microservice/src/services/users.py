@@ -12,6 +12,8 @@ from utils.exceptions.user_exceptions import UserAlreadyExist, UserNotFound
 
 
 class UserService:
+    """Сервисный репозиторий для юзера"""
+
     def __init__(
         self,
         user_repo: UserRepository = Depends(UserRepository),

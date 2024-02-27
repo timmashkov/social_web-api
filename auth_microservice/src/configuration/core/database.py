@@ -6,6 +6,8 @@ from configuration.core.config import base_config
 
 
 class SessionConnector:
+    """Коннектор к сессии алхимии"""
+
     def __init__(self, url: str, echo: bool) -> None:
         self.engine = create_async_engine(url=url, echo=echo)
         self.session_fabric = async_sessionmaker(

@@ -4,6 +4,8 @@ from utils.handys.str_helper import NotEmptyStr
 
 
 class BaseAPIException(HTTPException):
+    """Базовый эксепшн"""
+
     message: NotEmptyStr | str | None = "Base API Exception"
     status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR
 

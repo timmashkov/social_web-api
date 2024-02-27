@@ -15,6 +15,8 @@ from utils.exceptions.profile_exceptions import (
 
 
 class ProfileService:
+    """Сервисный репозиторий для профиля"""
+
     def __init__(self, prof_repo: ProfileRepository = Depends(ProfileRepository)):
         self.prof_repo = prof_repo
 
@@ -45,21 +47,19 @@ class ProfileService:
             return await self.prof_repo.delete_profile(profile_id=profile_id)
         raise ProfileNotFound
 
-    async def get_friends(self, profile_id: UUID):
+    async def get_friends(self, profile_id: UUID) -> FriendsOut:
         return await self.prof_repo.get_profile_with_friends(profile_id=profile_id)
 
-    async def follow(self, data: MatingSchema):
+    async def follow(self, data: MatingSchema) -> dict[str:str]:
         if not await self.prof_repo.get_profile_by_id(profile_id=data.profile_id):
             raise ProfileNotFound
         if not await self.prof_repo.get_profile_by_id(profile_id=data.friend_id):
             raise FriendNotExist
-        print(2)
         return await self.prof_repo.add_friends(cmd=data)
 
-    async def unfollow(self, data: MatingSchema):
+    async def unfollow(self, data: MatingSchema) -> dict[str:str]:
         if not await self.prof_repo.get_profile_by_id(profile_id=data.profile_id):
             raise ProfileNotFound
         if not await self.prof_repo.get_profile_by_id(profile_id=data.friend_id):
             raise FriendNotExist
-        print(1)
         return await self.prof_repo.delete_friends(cmd=data)

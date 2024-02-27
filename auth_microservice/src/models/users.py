@@ -10,6 +10,8 @@ if TYPE_CHECKING:
 
 
 class User(Base):
+    """Таблица юзера"""
+
     __tablename__ = "user"
 
     login: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)

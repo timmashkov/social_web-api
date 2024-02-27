@@ -16,6 +16,8 @@ from utils.exceptions.auth_exceptions import (
 
 
 class AuthHandler:
+    """Сервисный репозиторий для шифрования/дешифрования паролей/токенов"""
+
     secret = base_config.SECRET
 
     def encode_password(self, password, salt):

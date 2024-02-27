@@ -10,6 +10,8 @@ from schemas.auth import UserToken, UserJwtToken, GetUserByLogin
 
 
 class TokenRepository:
+    """Репозиторий с крудами для работы с токенами"""
+
     def __init__(
         self, session: AsyncSession = Depends(connector.scoped_session)
     ) -> None:

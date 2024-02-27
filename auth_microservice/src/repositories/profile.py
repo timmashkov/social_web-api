@@ -11,6 +11,8 @@ from schemas.profile import ProfileOut, ProfileIn, MatingSchema, FriendsOut
 
 
 class ProfileRepository:
+    """Репозиторий с крудами для профиля"""
+
     def __init__(self, session: AsyncSession = Depends(connector.scoped_session)):
         self.session = session
         self.model = Profile
@@ -80,7 +82,7 @@ class ProfileRepository:
         await self.session.commit()
         return {"message": f"Profile №{profile_id} has been deleted"}
 
-    async def add_friends(self, cmd: MatingSchema):
+    async def add_friends(self, cmd: MatingSchema) -> dict[str:str]:
         query_profile = (
             select(self.model)
             .options(joinedload(self.model.friends))
@@ -95,7 +97,7 @@ class ProfileRepository:
         await self.session.commit()
         return {"message": "Friend has been added"}
 
-    async def delete_friends(self, cmd: MatingSchema):
+    async def delete_friends(self, cmd: MatingSchema) -> dict[str:str]:
         query_profile = (
             select(self.model)
             .options(joinedload(self.model.friends))

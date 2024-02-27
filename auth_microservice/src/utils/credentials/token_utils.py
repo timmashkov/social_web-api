@@ -6,6 +6,10 @@ from schemas.auth import UserAccessToken
 from services.auth_handler import AuthHandler
 from utils.exceptions.auth_exceptions import InvalidCredentials, Unauthorized
 
+"""
+Вспомогательные фичи для аутентификации
+"""
+
 jwt_header = HTTPBearer()
 
 api_x_key_header = APIKeyHeader(name="X_ACCESS_TOKEN")

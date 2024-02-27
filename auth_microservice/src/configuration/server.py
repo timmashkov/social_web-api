@@ -7,6 +7,8 @@ FastAPIInstance = TypeVar("FastAPIInstance", bound="FastAPI")
 
 
 class ApiServer:
+    """Сервер апи"""
+
     app_auth = FastAPI(title="Social web auth microservice")
 
     def __init__(self, app: FastAPI, admin_panel: Admin):

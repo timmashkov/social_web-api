@@ -7,6 +7,8 @@ load_dotenv()
 
 
 class DevConfig(BaseSettings):
+    """Конфиг со всеми чувствительными данными"""
+
     DB_HOST: str = os.environ.get("DB_HOST")
     DB_PORT: int = os.environ.get("DB_PORT")
     DB_NAME: str = os.environ.get("DB_NAME")

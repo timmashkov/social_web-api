@@ -17,6 +17,8 @@ auth = AuthHandler()
 
 
 class AuthService:
+    """Сервисный репозиторий для логина/логаута"""
+
     def __init__(self, repository: TokenRepository = Depends(TokenRepository)) -> None:
         self.repository = repository
 

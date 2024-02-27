@@ -48,7 +48,7 @@ async def del_profile(
 async def add_friend(
     data: MatingSchema,
     profile_repo: ProfileService = PROFILES,
-):
+) -> dict[str:str]:
     return await profile_repo.follow(data=data)
 
 
@@ -56,7 +56,7 @@ async def add_friend(
 async def delete_friend(
     data: MatingSchema,
     profile_repo: ProfileService = PROFILES,
-):
+) -> dict[str:str]:
     return await profile_repo.unfollow(data=data)
 
 
