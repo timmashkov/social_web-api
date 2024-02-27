@@ -18,7 +18,11 @@ class DevConfig(BaseSettings):
         f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
     echo: bool = True
+
     SECRET: str = os.environ.get("SECRET_KEY")
+
+    REDIS_HOST: str = os.environ.get("REDIS_HOST")
+    REDIS_PORT: str = os.environ.get("REDIS_PORT")
 
 
 base_config = DevConfig()
