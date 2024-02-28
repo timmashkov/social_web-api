@@ -23,6 +23,8 @@ class DevConfig(BaseSettings):
 
     REDIS_HOST: str = os.environ.get("REDIS_HOST")
     REDIS_PORT: str = os.environ.get("REDIS_PORT")
+    EXPIRATION: int = 60
+    REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 
 
 base_config = DevConfig()
