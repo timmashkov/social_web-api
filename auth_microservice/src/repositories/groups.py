@@ -14,7 +14,7 @@ from schemas.group import (
 
 
 class GroupRepository:
-    def __init__(self, session: AsyncSession = Depends(connector)):
+    def __init__(self, session: AsyncSession = Depends(connector.scoped_session)):
         self.session = session
         self.model = Group
 
@@ -54,10 +54,12 @@ class GroupRepository:
         result = answer.mappings().first()
         return result
 
-    async def update_group(self, cmd: GroupUpdateIn) -> GroupOut | None:
+    async def update_group(
+        self, cmd: GroupUpdateIn, group_id: GroupSearchById
+    ) -> GroupOut | None:
         stmt = (
             update(self.model)
-            .where(self.model.id == cmd.id)
+            .where(self.model.id == group_id.id)
             .values(**cmd.model_dump())
             .returning(
                 self.model.id,

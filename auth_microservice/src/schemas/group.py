@@ -12,7 +12,7 @@ class GroupSearchByTitle(BaseModel):
     title: str
 
 
-class GroupUpdateIn(GroupSearchByTitle, GroupSearchById):
+class GroupUpdateIn(GroupSearchByTitle):
     description: str
 
 
@@ -20,6 +20,6 @@ class GroupIn(GroupUpdateIn):
     group_admin: UUID
 
 
-class GroupOut(GroupIn):
+class GroupOut(GroupIn, GroupSearchById):
     is_official: bool
     created_at: datetime | str
