@@ -1,6 +1,7 @@
+from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import String, Text, Boolean
+from sqlalchemy import String, Text, Boolean, func
 
 from .base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -20,6 +21,9 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     phone_number: Mapped[str] = mapped_column(String(11), unique=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    registered_at: Mapped[datetime] = mapped_column(
+        server_default=func.now(), default=datetime.now
+    )
 
     profile_link: Mapped["Profile"] = relationship(
         "Profile",

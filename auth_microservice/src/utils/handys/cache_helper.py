@@ -5,7 +5,9 @@ from configuration.core.config import base_config
 
 
 def redis_maker() -> aioredis.ConnectionPool:
-    return aioredis.ConnectionPool.from_url(f'redis://{base_config.REDIS_HOST}:{base_config.REDIS_PORT}')
+    return aioredis.ConnectionPool.from_url(
+        f"redis://{base_config.REDIS_HOST}:{base_config.REDIS_PORT}"
+    )
 
 
 redis_pool = redis_maker()
