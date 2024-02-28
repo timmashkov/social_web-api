@@ -61,11 +61,9 @@ class UserService:
         return answer
 
     async def get_user(self, user_id: UUID) -> UserOut:
-        cached_data = await self.cache_repo.read_cache("created_user")
-        if cached_data:
-            return cached_data
         answer = await self.user_repo.get_user_by_id(user_id=user_id)
         if answer:
+            await self.cache_repo.read_cache("created_user")
             return answer
         raise UserNotFound
 
