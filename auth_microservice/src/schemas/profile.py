@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
@@ -22,6 +23,16 @@ class ProfileIn(BaseModel):
 
 class ProfileOut(ProfileIn):
     id: UUID
+    created_at: datetime | str
+
+
+class ProfileUpdateIn(BaseModel):
+    first_name: str
+    last_name: str
+    age: int
+    city: str
+    occupation: Optional[str] = None
+    bio: Optional[str] = None
 
 
 class MatingSchema(BaseModel):

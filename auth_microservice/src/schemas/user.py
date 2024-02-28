@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 from uuid import UUID
 
@@ -23,3 +24,4 @@ class UserIn(BaseModel):
 
 class UserOut(UserIn):
     id: UUID
+    registered_at: datetime | str

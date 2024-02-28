@@ -7,7 +7,13 @@ from sqlalchemy.orm import joinedload
 
 from configuration.core.database import connector
 from models import Profile
-from schemas.profile import ProfileOut, ProfileIn, MatingSchema, FriendsOut
+from schemas.profile import (
+    ProfileOut,
+    ProfileIn,
+    MatingSchema,
+    FriendsOut,
+    ProfileUpdateIn,
+)
 
 
 class ProfileRepository:
@@ -29,7 +35,7 @@ class ProfileRepository:
         result = answer.scalar_one_or_none()
         return result
 
-    async def get_profile_by_name(self, name: str):
+    async def get_profile_by_name(self, name: str) -> ProfileOut | None:
         stmt = select(self.model).where(self.model.first_name == name)
         answer = await self.session.execute(stmt)
         result = answer.scalar_one_or_none()
@@ -47,6 +53,8 @@ class ProfileRepository:
                 self.model.city,
                 self.model.occupation,
                 self.model.bio,
+                self.model.created_at,
+                self.model.user_id,
             )
         )
         answer = await self.session.execute(stmt)
@@ -55,7 +63,7 @@ class ProfileRepository:
         return result
 
     async def update_profile(
-        self, data: ProfileIn, profile_id: UUID
+        self, data: ProfileUpdateIn, profile_id: UUID
     ) -> ProfileOut | None:
         stmt = (
             update(self.model)
@@ -69,6 +77,8 @@ class ProfileRepository:
                 self.model.city,
                 self.model.occupation,
                 self.model.bio,
+                self.model.created_at,
+                self.model.user_id,
             )
         )
         answer = await self.session.execute(stmt)

@@ -3,7 +3,13 @@ from uuid import UUID
 from fastapi import APIRouter, Depends
 
 from models import Profile
-from schemas.profile import ProfileOut, ProfileIn, MatingSchema, FriendsOut
+from schemas.profile import (
+    ProfileOut,
+    ProfileIn,
+    MatingSchema,
+    FriendsOut,
+    ProfileUpdateIn,
+)
 from services.profiles import ProfileService
 
 profile_router = APIRouter(prefix="/profile")
@@ -32,7 +38,7 @@ async def post_profile(
 
 @profile_router.patch("/{profile_id}", response_model=ProfileOut)
 async def patch_profile(
-    profile_id: UUID, data: ProfileIn, profile_repo: ProfileService = PROFILES
+    profile_id: UUID, data: ProfileUpdateIn, profile_repo: ProfileService = PROFILES
 ) -> ProfileOut:
     return await profile_repo.change_profile(data=data, profile_id=profile_id)
 

@@ -4,7 +4,7 @@ __all__ = (
     "ProfileAdmin",
     "ProfilePostAdmin",
     "UserAdmin",
-    "ProfileFriendAdmin"
+    "ProfileFriendAdmin",
 )
 from .groups import GroupAdmin, GroupPostAdmin
 from .profile import ProfileAdmin, ProfilePostAdmin, ProfileFriendAdmin

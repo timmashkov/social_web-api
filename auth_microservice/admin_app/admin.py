@@ -7,7 +7,7 @@ from auth_microservice.admin_app.admin_views import (
     ProfilePostAdmin,
     GroupPostAdmin,
     GroupAdmin,
-    ProfileFriendAdmin
+    ProfileFriendAdmin,
 )
 from configuration.core.database import connector
 from configuration.server import ApiServer

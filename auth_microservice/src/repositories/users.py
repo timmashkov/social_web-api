@@ -39,6 +39,7 @@ class UserRepository:
                 self.model.login,
                 self.model.email,
                 self.model.phone_number,
+                self.model.registered_at,
             )
         )
         answer = await self.session.execute(stmt)
@@ -56,6 +57,7 @@ class UserRepository:
                 self.model.login,
                 self.model.email,
                 self.model.phone_number,
+                self.model.registered_at,
             )
         )
         answer = await self.session.execute(stmt)

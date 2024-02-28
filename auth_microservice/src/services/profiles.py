@@ -6,7 +6,13 @@ from sqlalchemy.exc import IntegrityError
 
 from models import Profile
 from repositories.profile import ProfileRepository
-from schemas.profile import ProfileOut, ProfileIn, MatingSchema, FriendsOut
+from schemas.profile import (
+    ProfileOut,
+    ProfileIn,
+    MatingSchema,
+    FriendsOut,
+    ProfileUpdateIn,
+)
 from utils.exceptions.profile_exceptions import (
     ProfileNotFound,
     ProfileAlreadyExist,
@@ -37,7 +43,9 @@ class ProfileService:
         except (UniqueViolationError, IntegrityError):
             raise ProfileAlreadyExist
 
-    async def change_profile(self, data: ProfileIn, profile_id: UUID) -> ProfileOut:
+    async def change_profile(
+        self, data: ProfileUpdateIn, profile_id: UUID
+    ) -> ProfileOut:
         if await self.prof_repo.get_profile_by_id(profile_id=profile_id):
             return await self.prof_repo.update_profile(data=data, profile_id=profile_id)
         raise ProfileNotFound
