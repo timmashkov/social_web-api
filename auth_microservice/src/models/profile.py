@@ -43,7 +43,9 @@ class Profile(Base):
 
     groups: Mapped[list["Group"]] = relationship("Group", back_populates="subscribers")
 
-    posts: Mapped[list["ProfilePost"]] = relationship("ProfilePost", back_populates="author")
+    posts: Mapped[list["ProfilePost"]] = relationship(
+        "ProfilePost", back_populates="author"
+    )
 
 
 class ProfilePost(Base):

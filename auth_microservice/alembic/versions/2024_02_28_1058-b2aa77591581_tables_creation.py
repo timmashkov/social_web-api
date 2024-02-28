@@ -29,7 +29,12 @@ def upgrade() -> None:
         sa.Column("email", sa.String(length=50), nullable=False),
         sa.Column("phone_number", sa.String(length=11), nullable=False),
         sa.Column("is_verified", sa.Boolean(), nullable=False),
-        sa.Column("registered_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "registered_at",
+            sa.DateTime(),
+            server_default=sa.text("now()"),
+            nullable=False,
+        ),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("email"),
@@ -45,7 +50,9 @@ def upgrade() -> None:
         sa.Column("city", sa.String(length=50), nullable=False),
         sa.Column("occupation", sa.String(length=50), nullable=True),
         sa.Column("bio", sa.Text(), nullable=True),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
+        ),
         sa.Column("user_id", sa.UUID(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(["user_id"], ["user.id"], ondelete="CASCADE"),
@@ -57,7 +64,9 @@ def upgrade() -> None:
         sa.Column("title", sa.String(length=30), nullable=False),
         sa.Column("hashtag", sa.String(length=20), nullable=False),
         sa.Column("text", sa.Text(), nullable=False),
-        sa.Column("written_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "written_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
+        ),
         sa.Column("post_author", sa.UUID(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(["post_author"], ["profile.id"], ondelete="CASCADE"),
@@ -78,14 +87,18 @@ def upgrade() -> None:
             ["profile.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("profile_id", "friend_id", name="idx_unique_profile_friend"),
+        sa.UniqueConstraint(
+            "profile_id", "friend_id", name="idx_unique_profile_friend"
+        ),
     )
     op.create_table(
         "group",
         sa.Column("title", sa.String(length=50), nullable=False),
         sa.Column("description", sa.Text(), nullable=False),
         sa.Column("is_official", sa.Boolean(), nullable=False),
-        sa.Column("created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
+        ),
         sa.Column("group_admin", sa.UUID(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(["group_admin"], ["profile.id"], ondelete="CASCADE"),
@@ -98,7 +111,9 @@ def upgrade() -> None:
         sa.Column("header", sa.String(length=30), nullable=False),
         sa.Column("hashtag", sa.String(length=20), nullable=False),
         sa.Column("body", sa.Text(), nullable=False),
-        sa.Column("written_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False),
+        sa.Column(
+            "written_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
+        ),
         sa.Column("group_author", sa.UUID(), nullable=False),
         sa.Column("id", sa.UUID(), nullable=False),
         sa.ForeignKeyConstraint(["group_author"], ["group.id"], ondelete="CASCADE"),
