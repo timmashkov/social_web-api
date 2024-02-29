@@ -30,7 +30,7 @@ class DevConfig(BaseSettings):
     RABBIT_PASS: str = os.environ.get("RABBIT_PASS")
     RABBIT_HOST: str = os.environ.get("RABBIT_HOST")
     RABBIT_PORT: int = os.environ.get("RABBIT_PORT")
-    RMQ_URL: str = f"amqp://{RABBIT_NAME}:{RABBIT_PASS}@{RABBIT_HOST}/{RABBIT_PORT}"
+    RMQ_URL: str = f"amqp://{RABBIT_NAME}:{RABBIT_PASS}@{RABBIT_HOST}:{RABBIT_PORT}/"
 
 
 base_config = DevConfig()

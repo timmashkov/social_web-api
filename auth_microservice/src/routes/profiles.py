@@ -2,6 +2,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
+from configuration.broker import mq
 from models import Profile
 from schemas.profile import (
     ProfileOut,

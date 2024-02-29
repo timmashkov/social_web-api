@@ -3,13 +3,15 @@ from typing import TypeVar
 from fastapi import FastAPI
 from sqladmin import Admin
 
+from utils.handys.rabbit_lifespan import lifespan
+
 FastAPIInstance = TypeVar("FastAPIInstance", bound="FastAPI")
 
 
 class ApiServer:
     """Сервер апи"""
 
-    app_auth = FastAPI(title="Social web auth microservice")
+    app_auth = FastAPI(title="Social web auth microservice", lifespan=lifespan)
 
     def __init__(self, app: FastAPI, admin_panel: Admin):
         self.__app = app
