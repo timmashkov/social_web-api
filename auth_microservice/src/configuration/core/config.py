@@ -26,5 +26,11 @@ class DevConfig(BaseSettings):
     EXPIRATION: int = 60
     REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 
+    RABBIT_NAME: str = os.environ.get("RABBIT_NAME")
+    RABBIT_PASS: str = os.environ.get("RABBIT_PASS")
+    RABBIT_HOST: str = os.environ.get("RABBIT_HOST")
+    RABBIT_PORT: int = os.environ.get("RABBIT_PORT")
+    RMQ_URL: str = f"amqp://{RABBIT_NAME}:{RABBIT_PASS}@{RABBIT_HOST}/{RABBIT_PORT}"
+
 
 base_config = DevConfig()
