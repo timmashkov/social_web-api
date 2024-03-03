@@ -2,6 +2,7 @@ from typing import Any
 
 from fastapi import Depends
 
+from configuration.broker import mq
 from repositories.token import TokenRepository
 from schemas.auth import (
     UserId,
@@ -37,6 +38,9 @@ class AuthService:
         except Exception as e:
             return {"error": e}
         tokens = {"access_token": access_token, "refresh_token": refresh_token}
+        routing_key = "task_queue"  # Название очереди которую слушает сервис B
+        # Публикация сообщения.
+        await mq.send_message(routing_key, tokens)
         return tokens
 
     async def logout(self, refresh_token):
