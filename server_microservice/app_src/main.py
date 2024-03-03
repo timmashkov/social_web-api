@@ -5,8 +5,8 @@ from fastapi import FastAPI
 import uvicorn
 from aio_pika import IncomingMessage
 
-from core.config.server import mq, rpc
-from core.config.server_config import RMQ_URL
+from infrastructure.core import mq, rpc
+from infrastructure.core import RMQ_URL
 
 
 @asynccontextmanager
@@ -25,10 +25,7 @@ async def listen():
     await queue.consume(get_msg, no_ack=True)
 
 
-server_api = FastAPI(
-    title="Server microservice of social-web",
-    lifespan=lifespan
-)
+server_api = FastAPI(title="Server microservice of social-web", lifespan=lifespan)
 
 
 async def get_msg(msg: IncomingMessage):
@@ -40,7 +37,6 @@ async def get_msg(msg: IncomingMessage):
 async def get_rpc(**kwargs):
     print(kwargs)
     return {"status": "ok"}
-
 
 
 @server_api.get("/")

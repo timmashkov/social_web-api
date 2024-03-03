@@ -7,11 +7,12 @@ from uuid import uuid4
 import aio_pika
 from aio_pika.message import Message, IncomingMessage
 
-from core.config.server_config import RMQ_URL
+from infrastructure.settings.config import settings
 
 
 class BaseMQ:
     """Базовый класс для брокера, принимает ЮРЛ, содержит статики для энкода/декода"""
+
     def __init__(self, mq_url: str) -> None:
         self.mq_url = mq_url
         self.connection = None
@@ -28,6 +29,7 @@ class BaseMQ:
 
 class MessageQueue(BaseMQ):
     """Класс брокера, имплементирует коннкект и ченл, посылает мессагу и слушает очередь"""
+
     async def mq_connect(self):
         self.connection = await aio_pika.connect_robust(self.mq_url)
         self.channel = await self.connection.channel()
@@ -42,7 +44,7 @@ class MessageQueue(BaseMQ):
         message = Message(
             body=self.serialize_data(data=data),
             content_type="application/social_web",
-            correlation_id=str(uuid4())
+            correlation_id=str(uuid4()),
         )
         # паблишинг в дефолтную очередь
         await self.channel.default_exchange.publish(message, queue_name)
@@ -50,14 +52,16 @@ class MessageQueue(BaseMQ):
     async def listen_queue(self, func, queue_name: str, auto_delete: bool = False):
         """Прослушивание очереди"""
         # создание очереди
-        queue = await self.channel.declare_queue(queue_name, auto_delete=auto_delete, durable=True)
+        queue = await self.channel.declare_queue(
+            queue_name, auto_delete=auto_delete, durable=True
+        )
         # асинк итерирование очереди
         async with queue.iterator() as que_iter:
             async for message in que_iter:
                 await func(message)
 
 
-mq = MessageQueue(RMQ_URL)
+mq = MessageQueue(settings.RMQ_URL)
 
 
 class CoreRPC(BaseMQ):
@@ -83,11 +87,17 @@ class CoreRPC(BaseMQ):
         Важно!!! Узнать в лучший способ использования создания анонимных очередей.
         """
         # Создание уникальной очереди на которую будет возвращен ответ из другого сервиса.
-        callback_queue = await self.channel.declare_queue(exclusive=True, auto_delete=True, durable=True)
+        callback_queue = await self.channel.declare_queue(
+            exclusive=True, auto_delete=True, durable=True
+        )
 
-        await callback_queue.consume(self.on_response)  # Метод класса который обрабатывает ответ
+        await callback_queue.consume(
+            self.on_response
+        )  # Метод класса который обрабатывает ответ
 
-        consumers = copy.copy(callback_queue._consumers)  # Копирование консумеров для удаления очереди из раббита
+        consumers = copy.copy(
+            callback_queue._consumers
+        )  # Копирование консумеров для удаления очереди из раббита
 
         correlation_id = str(uuid4())
 
@@ -104,7 +114,7 @@ class CoreRPC(BaseMQ):
                 reply_to=callback_queue.name,
             ),
             routing_key=queue_name,
-            mandatory=True
+            mandatory=True,
         )
 
         # Magic #2 Выполняется только после того как другой сервис пришлет запрос.
@@ -129,8 +139,8 @@ class CoreRPC(BaseMQ):
         # partial работает как генерировании функции с аргументами,
         # Если пройтись по стеку тогда там на выходе будет что-то подобного on_call_message(message, exchange, func)
         print(1)
-        await queue.consume(partial(
-            self.on_call_message, self.channel.default_exchange, func)
+        await queue.consume(
+            partial(self.on_call_message, self.channel.default_exchange, func)
         )
 
     async def on_call_message(self, exchange, func, message: IncomingMessage):
@@ -141,7 +151,7 @@ class CoreRPC(BaseMQ):
             result = await func(**payload)
             print(result)
         except Exception as e:
-            result = self.serialize_data(dict(error='error', reason=str(e)))
+            result = self.serialize_data(dict(error="error", reason=str(e)))
 
         result = self.serialize_data(result)
 
@@ -152,4 +162,4 @@ class CoreRPC(BaseMQ):
         await message.ack()
 
 
-rpc = CoreRPC(RMQ_URL)
+rpc = CoreRPC(settings.RMQ_URL)
