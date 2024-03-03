@@ -5,27 +5,25 @@ from fastapi import FastAPI
 import uvicorn
 from aio_pika import IncomingMessage
 
-from infrastructure.core import mq, rpc
-from infrastructure.core import RMQ_URL
+from infrastructure.settings.config import settings
+from presentation import main_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await listen()
-    await rpc.consume_queue(get_rpc, "task_queue")
     yield
-    await mq.mq_close_conn()
 
 
 async def listen():
-    connection = await aio_pika.connect_robust(RMQ_URL)
+    connection = await aio_pika.connect_robust(settings.RMQ_URL)
     channel = await connection.channel()
-    rpc.channel = channel
     queue = await channel.declare_queue("task_queue", durable=True)
     await queue.consume(get_msg, no_ack=True)
 
 
-server_api = FastAPI(title="Server microservice of social-web", lifespan=lifespan)
+server_api = FastAPI(title="Server microservice of social-web")
+server_api.include_router(router=main_router)
 
 
 async def get_msg(msg: IncomingMessage):
@@ -37,11 +35,6 @@ async def get_msg(msg: IncomingMessage):
 async def get_rpc(**kwargs):
     print(kwargs)
     return {"status": "ok"}
-
-
-@server_api.get("/")
-async def hello():
-    return {"message": "Hello World!"}
 
 
 if __name__ == "__main__":
