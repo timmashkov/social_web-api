@@ -4,8 +4,8 @@ import sys
 from fastapi import FastAPI
 import uvicorn
 
-from auth_microservice.admin_app.admin import admin
-from configuration.broker import mq
+from admin_app import admin
+from configuration.broker import mq, rpc
 from configuration.server import ApiServer
 from routes import main_router
 
@@ -24,11 +24,9 @@ def start_app() -> FastAPI:
         В данном примере используется для удобного тригера отправки сообщения в другой сервис.
         """
         routing_key = "task_queue"  # Название очереди которую слушает сервис B
-        await mq.mq_connect()
 
         # Публикация сообщения.
         await mq.send_message(routing_key, text)
-        await mq.mq_close_conn()
         return {"succsess"}
 
     return ApiServer(app, admin).get_app()

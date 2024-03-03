@@ -38,8 +38,10 @@ class ProfileRepository:
     async def get_profile_by_name(self, name: str) -> ProfileOut | None:
         stmt = select(self.model).where(self.model.first_name == name)
         answer = await self.session.execute(stmt)
-        result = answer.scalar_one_or_none()
-        return result
+        result = answer.mappings().first()
+        if result:
+            return result
+        return None
 
     async def create_profile(self, data: ProfileIn) -> ProfileOut | None:
         stmt = (

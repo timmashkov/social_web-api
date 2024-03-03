@@ -1,7 +1,7 @@
 from sqladmin import Admin
 
-from auth_microservice.admin_app.admin_auth import auth_backend
-from auth_microservice.admin_app.admin_views import (
+from admin_app.admin_auth import auth_backend
+from admin_app.admin_views import (
     UserAdmin,
     ProfileAdmin,
     ProfilePostAdmin,

@@ -7,7 +7,7 @@ from uuid import uuid4
 import aio_pika
 from aio_pika.message import Message, IncomingMessage
 
-from configuration.core.config import base_config
+from core.config.server_config import RMQ_URL
 
 
 class BaseMQ:
@@ -57,7 +57,7 @@ class MessageQueue(BaseMQ):
                 await func(message)
 
 
-mq = MessageQueue(base_config.RMQ_URL)
+mq = MessageQueue(RMQ_URL)
 
 
 class CoreRPC(BaseMQ):
@@ -119,7 +119,7 @@ class CoreRPC(BaseMQ):
 
     async def consume_queue(self, func, queue_name: str):
         """Прослушивание очереди брокера."""
-        queue = await self.channel.declare_queue(queue_name)
+        queue = await self.channel.declare_queue(queue_name, durable=True)
 
         # Все очереди обрабатываются одной общей функцией.
         # В нее передается exchange, func и сам message.
@@ -128,6 +128,7 @@ class CoreRPC(BaseMQ):
 
         # partial работает как генерировании функции с аргументами,
         # Если пройтись по стеку тогда там на выходе будет что-то подобного on_call_message(message, exchange, func)
+        print(1)
         await queue.consume(partial(
             self.on_call_message, self.channel.default_exchange, func)
         )
@@ -136,7 +137,9 @@ class CoreRPC(BaseMQ):
         """Единая функция для приема message из других сервисов и отправки обратно ответа."""
         payload = self.deserialize_data(message.body)
         try:
+            print(payload, "test")
             result = await func(**payload)
+            print(result)
         except Exception as e:
             result = self.serialize_data(dict(error='error', reason=str(e)))
 
@@ -147,3 +150,6 @@ class CoreRPC(BaseMQ):
             routing_key=message.reply_to,
         )
         await message.ack()
+
+
+rpc = CoreRPC(RMQ_URL)

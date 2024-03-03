@@ -4,6 +4,7 @@ from asyncpg import UniqueViolationError
 from fastapi import Depends
 from sqlalchemy.exc import IntegrityError
 
+from configuration.broker import mq
 from models import Profile
 from repositories.profile import ProfileRepository
 from schemas.profile import (
@@ -42,6 +43,7 @@ class ProfileService:
         if not answer:
             raise ProfileNotFound
         await self.cache_repo.read_cache("created_profile")
+        await mq.send_message("task_queue", str(answer.user_id))
         return answer
 
     async def add_profile(self, data: ProfileIn) -> ProfileOut:

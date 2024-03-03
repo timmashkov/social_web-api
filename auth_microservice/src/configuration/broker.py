@@ -1,7 +1,8 @@
+import asyncio
 import copy
 import json
 from functools import partial
-from typing import Any
+from typing import Any, MutableMapping
 from uuid import uuid4
 
 import aio_pika
@@ -61,7 +62,7 @@ mq = MessageQueue(base_config.RMQ_URL)
 
 
 class CoreRPC(BaseMQ):
-    futures = {}
+    futures: MutableMapping[str, asyncio.Future] = {}
 
     @staticmethod
     async def del_consumer(queue, consumers):
@@ -91,8 +92,10 @@ class CoreRPC(BaseMQ):
 
         correlation_id = str(uuid4())
 
+        loop = asyncio.get_running_loop()
+
         # Magic #1
-        future = self.channel.loop.create_future()
+        future = loop.create_future()
 
         self.futures[correlation_id] = future
 
@@ -147,3 +150,6 @@ class CoreRPC(BaseMQ):
             routing_key=message.reply_to,
         )
         await message.ack()
+
+
+rpc = CoreRPC(base_config.RMQ_URL)
