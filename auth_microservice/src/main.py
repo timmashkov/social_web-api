@@ -5,7 +5,7 @@ from fastapi import FastAPI
 import uvicorn
 
 from admin_app import admin
-from configuration.broker import mq, rpc
+from configuration.broker import mq
 from configuration.server import ApiServer
 from routes import main_router
 
@@ -23,7 +23,7 @@ def start_app() -> FastAPI:
 
         В данном примере используется для удобного тригера отправки сообщения в другой сервис.
         """
-        routing_key = "task_queue"  # Название очереди которую слушает сервис B
+        routing_key = "social_web"  # Название очереди которую слушает сервис B
 
         # Публикация сообщения.
         await mq.send_message(routing_key, text)

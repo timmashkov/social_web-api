@@ -18,7 +18,7 @@ profile_router = APIRouter(prefix="/profile")
 PROFILES = Depends(ProfileService)
 
 
-@profile_router.get("/", response_model=list[ProfileOut])
+@profile_router.get("/all", response_model=list[ProfileOut])
 async def show_profiles(profile_repo: ProfileService = PROFILES) -> list[Profile]:
     return await profile_repo.get_profiles()
 
@@ -72,3 +72,8 @@ async def show_friends(
     profile_id: UUID | str, profile_repo: ProfileService = PROFILES
 ) -> FriendsOut:
     return await profile_repo.get_friends(profile_id=profile_id)
+
+
+@profile_router.get("/", response_model=None, summary="sending")
+async def send_profiles(profile_repo: ProfileService = PROFILES):
+    return await profile_repo.send_profiles()

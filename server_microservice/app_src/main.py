@@ -5,12 +5,14 @@ import uvicorn
 
 from infrastructure.broker.rabbit_handler import mq
 from infrastructure.utils import listen
+from infrastructure.utils.mq_handlers import iter_messages
 from presentation import main_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await listen()
+    await iter_messages()
     yield
     await mq.mq_close_conn()
 

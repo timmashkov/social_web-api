@@ -43,7 +43,6 @@ class ProfileService:
         if not answer:
             raise ProfileNotFound
         await self.cache_repo.read_cache("created_profile")
-        await mq.send_message("task_queue", str(answer.user_id))
         return answer
 
     async def add_profile(self, data: ProfileIn) -> ProfileOut:
@@ -84,3 +83,11 @@ class ProfileService:
         if not await self.prof_repo.get_profile_by_id(profile_id=data.friend_id):
             raise FriendNotExist
         return await self.prof_repo.delete_friends(cmd=data)
+
+    async def send_profiles(self):
+        """Special method for sending profiles list to another microservice"""
+        answer = await self.prof_repo.get_all_for_mq()
+        routing_key = "social_web"
+        result = [row.as_dict() for row in answer]
+        await mq.send_message(routing_key, data=result)
+        return answer

@@ -1,17 +1,20 @@
 import aio_pika
 from aio_pika import IncomingMessage
 
+from infrastructure.broker.rabbit_handler import mq
 from infrastructure.settings.config import settings
 
 
 async def listen():
-    connection = await aio_pika.connect_robust(settings.RMQ_URL)
-    channel = await connection.channel()
-    queue = await channel.declare_queue("task_queue", durable=True)
-    await queue.consume(get_msg, no_ack=True)
+    await mq.mq_connect()
+    await mq.get_message(get_msg, "social_web")
 
 
 async def get_msg(msg: IncomingMessage):
     tokens = msg.body.decode("utf-8")
-    print(f"Got {tokens}")
-    return tokens
+    print(f"Got {msg}: {tokens}")
+
+
+async def iter_messages():
+    await mq.mq_connect()
+    await mq.listen_queue(get_msg, "social_web")

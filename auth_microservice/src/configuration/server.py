@@ -13,7 +13,7 @@ class ApiServer:
 
     app_auth = FastAPI(title="Social web auth microservice", lifespan=lifespan)
 
-    def __init__(self, app: FastAPI, admin_panel: Admin):
+    def __init__(self, app: FastAPI, admin_panel):
         self.__app = app
         self.__admin_panel = admin_panel
 

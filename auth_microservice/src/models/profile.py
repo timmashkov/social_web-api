@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import String, Integer, Text, ForeignKey, func
+from sqlalchemy import String, Integer, Text, ForeignKey, func, inspect
 from typing import TYPE_CHECKING
 from .base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
