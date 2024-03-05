@@ -1,0 +1,65 @@
+version: "3.7"
+services:
+  server_database:
+    image: postgres:latest
+    container_name: auth_database
+    command: postgres -p 5121
+    expose:
+      - 5121
+    env_file:
+      - .env_prod
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -p 5121"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
+
+  server_redis:
+    image: redis:latest
+    container_name: sw_redis
+    expose:
+      - 5370
+    ports:
+      - "5370:5370"
+    env_file:
+      - .env_prod
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  server_rabbitmq:
+    image: rabbitmq:latest
+    hostname: rabbitmq
+    restart: always
+    container_name: sw_rabbitmq
+    env_file:
+      - .env_prod
+    ports:
+      - 5672:5672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+  server_service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    env_file:
+      - .env_prod
+    container_name: main_app
+    command: sh -c "chmod +x /server_microservice/docker/start_app.sh && /server_microservice/docker/start_app.sh"
+    ports:
+      - "8814:8000"
+    depends_on:
+      server_database:
+        condition: service_healthy
+      server_redis:
+        condition: service_healthy
+      server_rabbitmq:
+        condition: service_healthy
