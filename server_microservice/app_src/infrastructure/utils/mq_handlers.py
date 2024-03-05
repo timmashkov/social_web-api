@@ -7,12 +7,13 @@ from infrastructure.settings.config import settings
 
 async def listen():
     await mq.mq_connect()
-    await mq.get_message(get_msg, "sw-feed")
+    # await mq.get_message(get_msg, "sw-feed")
 
 
-async def get_msg(msg: IncomingMessage):
+def get_msg(msg: IncomingMessage):
     data = msg.body.decode("utf-8")
     print(f"Got {msg}: {data}")
+    print(data)
     return data
 
 

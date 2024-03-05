@@ -1,6 +1,4 @@
-import copy
 import json
-from functools import partial
 from typing import Any
 from uuid import uuid4
 
@@ -23,7 +21,7 @@ class BaseMQ:
         return json.dumps(data).encode()
 
     @staticmethod
-    def deserialize_data(data: bytes) -> Any:
+    def deserialize_data(data: bytes | list[str]) -> Any:
         return json.loads(data)
 
 
@@ -54,11 +52,21 @@ class MessageQueue(BaseMQ):
             async for message in que_iter:
                 await func(message)
 
-    async def get_message(self, func, queue_name: str, no_ack: bool = True):
+    async def get_message(self, queue_name: str, no_ack: bool = True):
+        messages = []
+
+        async def func(msg: IncomingMessage):
+            data = self.deserialize_data(msg.body)
+            messages.append(data)
+            print(data)
+            return data
+
         queue = await self.channel.declare_queue(
             queue_name, auto_delete=False, durable=True
         )
         await queue.consume(func, no_ack)
+
+        return messages
 
 
 mq = MessageQueue(settings.RMQ_URL)

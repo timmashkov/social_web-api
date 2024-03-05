@@ -1,4 +1,3 @@
-
 import json
 from dataclasses import asdict
 
@@ -25,6 +24,7 @@ class BaseMQ:
         def custom_serializer(obj):
             if isinstance(obj.__class__, DeclarativeMeta):
                 return asdict(obj)
+
         return json.dumps(data, default=custom_serializer).encode()
 
     @staticmethod

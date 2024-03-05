@@ -8,7 +8,6 @@ from pydantic import BaseModel, EmailStr, field_validator
 class UserIn(BaseModel):
     login: str
     password: str
-    token: Optional[str] = None
     email: EmailStr
     phone_number: str
     is_verified: Optional[bool] = False

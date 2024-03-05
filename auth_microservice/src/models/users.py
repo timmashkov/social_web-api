@@ -17,7 +17,9 @@ class User(Base):
 
     login: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(Text, unique=False, nullable=False)
-    token: Mapped[str] = mapped_column(Text, unique=True, nullable=True)
+    token: Mapped[str] = mapped_column(
+        Text, unique=True, nullable=True, server_default="", default=""
+    )
     email: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     phone_number: Mapped[str] = mapped_column(String(11), unique=True, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)

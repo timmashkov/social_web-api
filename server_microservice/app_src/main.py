@@ -12,12 +12,12 @@ from presentation import main_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await listen()
-    #await iter_messages()
+    # await iter_messages()
     yield
     await mq.mq_close_conn()
 
 
-server_api = FastAPI(title="Server microservice of social-web", lifespan=lifespan)
+server_api = FastAPI(title="Server microservice of social-web")
 server_api.include_router(router=main_router)
 
 

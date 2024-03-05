@@ -2,9 +2,7 @@ from fastapi import APIRouter, Depends
 
 from services import FeedService
 
-feed_router = APIRouter(
-    prefix="/feed"
-)
+feed_router = APIRouter(prefix="/feed")
 
 FEED = Depends(FeedService)
 

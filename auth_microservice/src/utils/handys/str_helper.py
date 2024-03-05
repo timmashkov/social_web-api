@@ -2,7 +2,7 @@ import json
 from dataclasses import asdict
 from typing import Any
 
-from sqlalchemy.orm import  DeclarativeMeta
+from sqlalchemy.orm import DeclarativeMeta
 
 from pydantic.v1.utils import update_not_none
 from pydantic.v1.validators import constr_length_validator

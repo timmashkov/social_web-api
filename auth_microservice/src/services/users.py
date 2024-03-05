@@ -58,7 +58,6 @@ class UserService:
     async def get_users(self) -> list[User]:
         answer = await self.user_repo.get_all()
         await self.cache_repo.read_cache("created_user")
-
         return answer
 
     async def get_user(self, user_id: UUID) -> UserOut:
