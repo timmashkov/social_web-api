@@ -12,7 +12,7 @@ from presentation import main_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await listen()
-    await iter_messages()
+    #await iter_messages()
     yield
     await mq.mq_close_conn()
 

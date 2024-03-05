@@ -7,12 +7,13 @@ from infrastructure.settings.config import settings
 
 async def listen():
     await mq.mq_connect()
-    await mq.get_message(get_msg, "social_web")
+    await mq.get_message(get_msg, "sw-feed")
 
 
 async def get_msg(msg: IncomingMessage):
-    tokens = msg.body.decode("utf-8")
-    print(f"Got {msg}: {tokens}")
+    data = msg.body.decode("utf-8")
+    print(f"Got {msg}: {data}")
+    return data
 
 
 async def iter_messages():

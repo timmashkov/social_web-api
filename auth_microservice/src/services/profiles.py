@@ -87,7 +87,7 @@ class ProfileService:
     async def send_profiles(self):
         """Special method for sending profiles list to another microservice"""
         answer = await self.prof_repo.get_all_for_mq()
-        routing_key = "social_web"
+        routing_key = "sw-feed"
         result = [row.as_dict() for row in answer]
         await mq.send_message(routing_key, data=result)
         return answer

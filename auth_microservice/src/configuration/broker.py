@@ -49,8 +49,6 @@ class MessageQueue(BaseMQ):
             content_type="application/social_web",
             correlation_id=str(uuid4()),
         )
-        print(data)
-        print(self.serialize_data(data=data))
         await self.channel.default_exchange.publish(message, queue_name)
 
     async def listen_queue(self, func, queue_name: str, auto_delete: bool = False):
