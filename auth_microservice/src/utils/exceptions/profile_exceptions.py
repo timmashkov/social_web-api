@@ -15,3 +15,13 @@ class ProfileAlreadyExist(BaseAPIException):
 class FriendNotExist(BaseAPIException):
     status_code = status.HTTP_404_NOT_FOUND
     message = "Friend not found"
+
+
+class ProfilePostNotFound(BaseAPIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    message = "Post not found"
+
+
+class ProfilePostAlreadyExist(BaseAPIException):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    message = "Post already exist"

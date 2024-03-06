@@ -34,12 +34,6 @@ class ProfileRepository:
         result = answer.scalars().all()
         return list(result)
 
-    async def get_all_for_mq(self):
-        stmt = select(self.model).order_by(self.model.id)
-        answer = await self.session.execute(stmt)
-        result = answer.scalars().all()
-        return list(result)
-
     async def get_profile_by_id(self, profile_id: UUID) -> ProfileOut | None:
         stmt = select(self.model).where(self.model.id == profile_id)
         answer = await self.session.execute(stmt)

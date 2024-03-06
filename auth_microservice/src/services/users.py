@@ -35,7 +35,6 @@ class UserService:
                 value=UserIn(
                     login=data.login,
                     password=salted_pass,
-                    token=data.token,
                     email=data.email,
                     phone_number=data.phone_number,
                     is_verified=data.is_verified,
@@ -45,7 +44,6 @@ class UserService:
                 data=UserIn(
                     login=data.login,
                     password=salted_pass,
-                    token=data.token,
                     email=data.email,
                     phone_number=data.phone_number,
                     is_verified=data.is_verified,
