@@ -49,7 +49,7 @@ class Profile(Base):
 
 
 class ProfilePost(Base):
-    __tablename__ = "Profile_post"
+    __tablename__ = "profile_post"
 
     title: Mapped[str] = mapped_column(String(30), unique=False, nullable=False)
     hashtag: Mapped[str] = mapped_column(String(20), unique=False, nullable=False)

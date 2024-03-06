@@ -7,7 +7,7 @@ from redis import asyncio as aioredis
 class CacheService:
     def __init__(self):
         self.redis_pool = aioredis.ConnectionPool.from_url(
-            f"redis://{base_config.REDIS_HOST}:{base_config.REDIS_PORT}"
+            f"redis://{base_config.REDIS_HOST}:{base_config.REDIS_PORT}/0"
         )
         self.cacher = aioredis.Redis(connection_pool=self.redis_pool)
 
