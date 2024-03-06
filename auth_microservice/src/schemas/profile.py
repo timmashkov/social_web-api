@@ -48,3 +48,31 @@ class MatingSchema(BaseModel):
 
 class FriendsOut(ProfileOut):
     friends: list[ProfileOut]
+
+
+class GetProfilePostById(BaseModel):
+    id: UUID | str
+
+
+class GetProfilePostByTitle(BaseModel):
+    title: str
+
+
+class ProfilePostIn(GetProfilePostByTitle):
+    hashtag: str
+    text: str
+    post_author: UUID
+
+    @field_validator("hashtag")
+    def check_hashtag(cls, data):
+        if data.startswith("#"):
+            return data
+        raise ValueError("Hashtag must starts with '#'")
+
+
+class ProfilePostOut(GetProfilePostById, ProfilePostIn):
+    written_at: datetime | str
+
+
+class ProfilePostOutWithAuthor(ProfilePostOut):
+    author: ProfileOut
