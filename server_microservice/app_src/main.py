@@ -2,11 +2,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 import uvicorn
-import requests
 
 from infrastructure.broker.rabbit_handler import mq, rpc
-from infrastructure.utils import listen
-from infrastructure.utils.mq_handlers import iter_messages
 from presentation import main_router
 
 
@@ -23,4 +20,4 @@ server_api.include_router(router=main_router)
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:server_api", reload=True, port=2222)
+    uvicorn.run("main:server_api", reload=True, port=1111)

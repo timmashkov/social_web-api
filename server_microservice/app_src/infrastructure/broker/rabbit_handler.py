@@ -87,14 +87,14 @@ class RPC(BaseMQ):
         for key, val in consumers.items():
             await queue.cancel(key)
 
-    def on_response(self, message: IncomingMessage):
+    async def on_response(self, message: IncomingMessage):
         """
         Функция которая обрабатывает приходящий ответ из другого сервиса
 
         """
         future = self.futures.pop(message.correlation_id)
         future.set_result(message.body)
-        message.ack()
+        await message.ack()
 
     async def call(self, queue_name: str, **kwargs):
         """

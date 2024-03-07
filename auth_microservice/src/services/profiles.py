@@ -130,3 +130,8 @@ class ProfileService:
         result = [row.as_dict() for row in answer]
         await mq.send_message(routing_key, data=result)
         return answer
+
+    async def rpc_send_profiles(self):
+        answer = await self.prof_repo.get_all()
+        result = [row.as_dict() for row in answer]
+        return result
