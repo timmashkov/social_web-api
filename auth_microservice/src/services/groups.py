@@ -1,6 +1,8 @@
 from models import Group
 from repositories.groups import GroupRepository
+from asyncpg import UniqueViolationError
 from fastapi import Depends
+from sqlalchemy.exc import IntegrityError
 
 from schemas.group import (
     GroupSearchById,
@@ -42,11 +44,12 @@ class GroupService:
         return answer
 
     async def register_group(self, cmd: GroupIn) -> GroupOut:
-        if not self.search_group_by_title(cmd=GroupSearchByTitle(title=cmd.title)):
+        try:
             answer = await self.group_repo.create_group(cmd=cmd)
             await self.cache_repo.create_cache("created_group", value=answer)
             return answer
-        raise GroupAlreadyExist
+        except (UniqueViolationError, IntegrityError):
+            raise GroupAlreadyExist
 
     async def edit_group(
         self, cmd: GroupUpdateIn, group_id: GroupSearchById

@@ -197,3 +197,46 @@ class ProfileRepository:
         answer = await self.session.execute(stmt)
         result = answer.unique().scalar_one_or_none()
         return result
+
+    async def get_profile_with_posts(self, profile_id: UUID):
+        stmt = (
+            select(self.model)
+            .options(joinedload(self.model.posts))
+            .where(self.model.id == profile_id)
+        )
+        answer = await self.session.execute(stmt)
+        result = answer.unique().scalar_one_or_none()
+        return result
+
+    async def get_profile_with_groups(self, profile_id: UUID):
+        stmt = (
+            select(self.model)
+            .options(joinedload(self.model.groups))
+            .where(self.model.id == profile_id)
+        )
+        answer = await self.session.execute(stmt)
+        result = answer.unique().scalar_one_or_none()
+        return result
+
+    async def get_profile_with_friends_groups(self, profile_id: UUID):
+        stmt = (
+            select(self.model)
+            .options(joinedload(self.model.friends))
+            .options(joinedload(self.model.groups))
+            .where(self.model.id == profile_id)
+        )
+        answer = await self.session.execute(stmt)
+        result = answer.unique().scalar_one_or_none()
+        return result
+
+    async def get_full_profile(self, profile_id: UUID):
+        stmt = (
+            select(self.model)
+            .options(joinedload(self.model.friends))
+            .options(joinedload(self.model.groups))
+            .options(joinedload(self.model.posts))
+            .where(self.model.id == profile_id)
+        )
+        answer = await self.session.execute(stmt)
+        result = answer.unique().scalar_one_or_none()
+        return result
