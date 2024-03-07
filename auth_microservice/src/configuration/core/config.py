@@ -17,7 +17,7 @@ class DevConfig(BaseSettings):
     db_url: str = (
         f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     )
-    echo: bool = True
+    echo: bool = False
 
     SECRET: str = os.environ.get("SECRET_KEY")
 

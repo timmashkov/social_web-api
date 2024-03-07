@@ -5,7 +5,7 @@ from fastapi import FastAPI
 import uvicorn
 
 from admin_app import admin
-from configuration.broker import mq
+from configuration.broker import mq, rpc
 from configuration.server import ApiServer
 from routes import main_router
 
@@ -16,18 +16,30 @@ def start_app() -> FastAPI:
 
     app.include_router(router=main_router)
 
-    @app.get("/mq_send_message")
-    async def mq_send_message(text: str):
+    @app.get("/rpc_send_message")
+    async def rpc_send_message(text: str):
         """
         EndPoint для отправки сообщения в сервис B.
 
         В данном примере используется для удобного тригера отправки сообщения в другой сервис.
         """
-        routing_key = "social_web"  # Название очереди которую слушает сервис B
+        routing_key = "rpc_queue"  # Название очереди которую слушает сервис B
 
         # Публикация сообщения.
-        await mq.send_message(routing_key, text)
-        return {"succsess"}
+        response = await rpc.call(routing_key)
+        return response
+
+    @app.get("/mq_send_message")
+    async def mq_send_message():
+        """
+        EndPoint для отправки сообщения в сервис B.
+
+        В данном примере используется для удобного тригера отправки сообщения в другой сервис.
+        """
+        routing_key = "mq_queue"  # Название очереди которую слушает сервис B
+
+        # Публикация сообщения.
+        await mq.send_message(routing_key, "hello world")
 
     return ApiServer(app, admin).get_app()
 
