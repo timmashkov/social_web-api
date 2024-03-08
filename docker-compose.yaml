@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  server_database:
+  auth_database:
     image: postgres:latest
     container_name: auth_database
     command: postgres -p 5121
@@ -16,7 +16,23 @@ services:
       start_period: 10s
     restart: always
 
-  server_redis:
+  server_database:
+    image: postgres:latest
+    container_name: server_database
+    command: postgres -p 5122
+    expose:
+      - 5122
+    env_file:
+      - .env_prod_1
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -p 5122" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: always
+
+  sw_redis:
     image: redis:latest
     container_name: sw_redis
     expose:
@@ -31,7 +47,7 @@ services:
       timeout: 5s
       retries: 3
 
-  server_rabbitmq:
+  sw_rabbitmq:
     image: rabbitmq:latest
     hostname: rabbitmq
     restart: always
@@ -39,12 +55,30 @@ services:
     env_file:
       - .env_prod
     ports:
-      - 5672:5672
+      - "5672:5672"
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 10s
       timeout: 30s
       retries: 5
+
+  auth_service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    env_file:
+      - .env_prod
+    container_name: main_app
+    command: sh -c "chmod +x /auth_microservice/docker/start_app.sh && /auth_microservice/docker/start_app.sh"
+    ports:
+      - "8814:8000"
+    depends_on:
+      auth_database:
+        condition: service_healthy
+      auth_redis:
+        condition: service_healthy
+      auth_rabbitmq:
+        condition: service_healthy
 
   server_service:
     build:
@@ -55,11 +89,11 @@ services:
     container_name: main_app
     command: sh -c "chmod +x /server_microservice/docker/start_app.sh && /server_microservice/docker/start_app.sh"
     ports:
-      - "8814:8000"
+      - "2222:8000"
     depends_on:
       server_database:
         condition: service_healthy
-      server_redis:
+      sw_redis:
         condition: service_healthy
-      server_rabbitmq:
+      sw_rabbitmq:
         condition: service_healthy
