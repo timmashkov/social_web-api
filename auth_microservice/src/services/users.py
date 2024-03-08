@@ -72,7 +72,6 @@ class UserService:
                 value=UserIn(
                     login=data.login,
                     password=data.password,
-                    token=data.token,
                     email=data.email,
                     phone_number=data.phone_number,
                     is_verified=data.is_verified,

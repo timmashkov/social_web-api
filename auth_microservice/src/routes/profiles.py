@@ -12,6 +12,10 @@ from schemas.profile import (
     ProfilePostOut,
     GetProfilePostById,
     ProfilePostIn,
+    ProfileWithPosts,
+    ProfileWithGroups,
+    ProfileWithFriendsGroups,
+    ProfileFull,
 )
 from services.profiles import ProfileService
 
@@ -30,6 +34,34 @@ async def show_profile(
     profile_id: UUID, profile_repo: ProfileService = PROFILES
 ) -> ProfileOut:
     return await profile_repo.get_profile_by_id(profile_id=profile_id)
+
+
+@profile_router.get("/posts/{profile_id}", response_model=ProfileWithPosts)
+async def show_posts(
+    profile_id: UUID, profile_repo: ProfileService = PROFILES
+) -> ProfileWithPosts:
+    return await profile_repo.get_posts(profile_id=profile_id)
+
+
+@profile_router.get("/groups/{profile_id}", response_model=ProfileWithGroups)
+async def show_groups(
+    profile_id: UUID, profile_repo: ProfileService = PROFILES
+) -> ProfileWithGroups:
+    return await profile_repo.get_groups(profile_id=profile_id)
+
+
+@profile_router.get("/thumbs/{profile_id}", response_model=ProfileWithFriendsGroups)
+async def show_groups_friends(
+    profile_id: UUID, profile_repo: ProfileService = PROFILES
+) -> ProfileWithFriendsGroups:
+    return await profile_repo.get_friends_groups(profile_id=profile_id)
+
+
+@profile_router.get("/full/{profile_id}", response_model=ProfileFull)
+async def show_full(
+    profile_id: UUID, profile_repo: ProfileService = PROFILES
+) -> ProfileFull:
+    return await profile_repo.get_profile_full(profile_id=profile_id)
 
 
 @profile_router.get("/{post_id}", response_model=ProfilePostOut)

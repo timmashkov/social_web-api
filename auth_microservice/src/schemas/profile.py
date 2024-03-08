@@ -4,6 +4,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, field_validator, model_validator
 
+from schemas.group import GroupOut
+
 
 class ProfileIn(BaseModel):
     first_name: str
@@ -76,3 +78,17 @@ class ProfilePostOut(GetProfilePostById, ProfilePostIn):
 
 class ProfilePostOutWithAuthor(ProfilePostOut):
     author: ProfileOut
+
+
+class ProfileWithPosts(ProfileOut):
+    posts: list[ProfilePostOut]
+
+
+class ProfileWithGroups(ProfileOut):
+    groups: list[GroupOut]
+
+
+class ProfileWithFriendsGroups(FriendsOut, ProfileWithGroups): ...
+
+
+class ProfileFull(ProfileWithFriendsGroups, ProfileWithPosts): ...

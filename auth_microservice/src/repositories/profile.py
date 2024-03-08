@@ -17,6 +17,10 @@ from schemas.profile import (
     ProfilePostOut,
     GetProfilePostById,
     GetProfilePostByTitle,
+    ProfileWithPosts,
+    ProfileWithGroups,
+    ProfileWithFriendsGroups,
+    ProfileFull,
 )
 
 
@@ -198,7 +202,7 @@ class ProfileRepository:
         result = answer.unique().scalar_one_or_none()
         return result
 
-    async def get_profile_with_posts(self, profile_id: UUID):
+    async def get_profile_with_posts(self, profile_id: UUID) -> ProfileWithPosts | None:
         stmt = (
             select(self.model)
             .options(joinedload(self.model.posts))
@@ -208,7 +212,9 @@ class ProfileRepository:
         result = answer.unique().scalar_one_or_none()
         return result
 
-    async def get_profile_with_groups(self, profile_id: UUID):
+    async def get_profile_with_groups(
+        self, profile_id: UUID
+    ) -> ProfileWithGroups | None:
         stmt = (
             select(self.model)
             .options(joinedload(self.model.groups))
@@ -218,7 +224,9 @@ class ProfileRepository:
         result = answer.unique().scalar_one_or_none()
         return result
 
-    async def get_profile_with_friends_groups(self, profile_id: UUID):
+    async def get_profile_with_friends_groups(
+        self, profile_id: UUID
+    ) -> ProfileWithFriendsGroups | None:
         stmt = (
             select(self.model)
             .options(joinedload(self.model.friends))
@@ -229,7 +237,7 @@ class ProfileRepository:
         result = answer.unique().scalar_one_or_none()
         return result
 
-    async def get_full_profile(self, profile_id: UUID):
+    async def get_full_profile(self, profile_id: UUID) -> ProfileFull | None:
         stmt = (
             select(self.model)
             .options(joinedload(self.model.friends))

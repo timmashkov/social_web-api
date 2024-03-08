@@ -17,6 +17,10 @@ from schemas.profile import (
     ProfilePostOut,
     GetProfilePostByTitle,
     ProfilePostIn,
+    ProfileWithPosts,
+    ProfileWithGroups,
+    ProfileWithFriendsGroups,
+    ProfileFull,
 )
 from services.cache_service import CacheService
 from utils.exceptions.profile_exceptions import (
@@ -108,6 +112,20 @@ class ProfileService:
 
     async def get_friends(self, profile_id: UUID) -> FriendsOut:
         return await self.prof_repo.get_profile_with_friends(profile_id=profile_id)
+
+    async def get_posts(self, profile_id: UUID) -> ProfileWithPosts:
+        return await self.prof_repo.get_profile_with_posts(profile_id=profile_id)
+
+    async def get_groups(self, profile_id: UUID) -> ProfileWithGroups:
+        return await self.prof_repo.get_profile_with_groups(profile_id=profile_id)
+
+    async def get_friends_groups(self, profile_id: UUID) -> ProfileWithFriendsGroups:
+        return await self.prof_repo.get_profile_with_friends_groups(
+            profile_id=profile_id
+        )
+
+    async def get_profile_full(self, profile_id: UUID) -> ProfileFull:
+        return await self.prof_repo.get_full_profile(profile_id=profile_id)
 
     async def follow(self, data: MatingSchema) -> dict[str:str]:
         if not await self.prof_repo.get_profile_by_id(profile_id=data.profile_id):
