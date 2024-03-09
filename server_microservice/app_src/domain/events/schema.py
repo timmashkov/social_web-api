@@ -1,8 +1,8 @@
 from datetime import datetime, date
-from typing import Optional
+from typing import Optional, Any
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 __all__ = ("GetEventById", "GetEventByName", "EventUpd", "EventIn", "EventOut")
 
@@ -23,6 +23,10 @@ class EventUpd(GetEventByName):
 class EventIn(EventUpd): ...
 
 
-class EventOut(EventIn):
+class EventOut(EventIn, GetEventById):
     created_at: datetime
-    last_time: Optional[datetime] = str
+    last_time: float
+
+    @field_validator("last_time")
+    def days_count(cls, data):
+        return int(data) // 3600

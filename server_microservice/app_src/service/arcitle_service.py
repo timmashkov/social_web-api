@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from domain.articles.repository import ArticleRepository
 from fastapi import Depends
 

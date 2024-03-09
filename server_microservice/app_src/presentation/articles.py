@@ -8,7 +8,7 @@ from domain.articles.schema import (
     GetArticleById,
     GetArticleByTitle,
 )
-from services import ArticleService
+from service import ArticleService
 
 article_router = APIRouter(prefix="/articles")
 

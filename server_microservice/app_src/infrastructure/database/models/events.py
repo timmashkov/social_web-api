@@ -19,6 +19,10 @@ class Event(Base):
     created_at: Mapped[datetime] = mapped_column(
         server_default=func.now(), default=datetime.now
     )
-    last_time = column_property(func.datediff(event_date, created_at))
+    last_time = column_property(
+        func.concat(
+            func.extract("epoch", event_date) - func.extract("epoch", created_at)
+        )
+    )
 
     guests: Mapped[list["Guest"]] = relationship("Guest", back_populates="event_link")
