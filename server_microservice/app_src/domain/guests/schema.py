@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, field_validator
 
 __all__ = ("GetGuestById", "GuestUpdate", "GuestIn", "GuestOut")
 
@@ -20,16 +20,10 @@ class GuestUpdate(BaseModel):
         raise ValueError("First name must start from title letter")
 
     @field_validator("last_name")
-    def check_first_name(cls, data):
+    def check_last_name(cls, data):
         if data.istitle():
             return data
         raise ValueError("Last name must start from title letter")
-
-    @model_validator(mode="before")
-    def check_names(cls, values):
-        if values.get("first_name") == values.get("last_name"):
-            raise ValueError("First name can't be equal last name")
-        return values
 
 
 class GuestIn(GuestUpdate):

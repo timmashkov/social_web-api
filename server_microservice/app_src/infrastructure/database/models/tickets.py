@@ -20,7 +20,9 @@ class Ticket(Base):
         server_default=func.now(), default=datetime.now
     )
     exp_date: Mapped[Date] = mapped_column(Date, unique=False, nullable=False)
-    last_time = column_property(func.datediff(created_at, exp_date))
+    last_time = column_property(
+        func.concat(func.extract("epoch", exp_date) - func.extract("epoch", created_at))
+    )
 
     guest_id: Mapped[UUID] = mapped_column(
         ForeignKey("guest.id", ondelete="CASCADE"), unique=True, nullable=False
