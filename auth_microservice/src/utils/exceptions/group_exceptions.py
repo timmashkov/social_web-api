@@ -10,3 +10,13 @@ class GroupNotFound(BaseAPIException):
 class GroupAlreadyExist(BaseAPIException):
     status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
     message = "Group already exist"
+
+
+class GroupPostNotFound(BaseAPIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    message = "Group not found"
+
+
+class GroupPostAlreadyExist(BaseAPIException):
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    message = "Group already exist"

@@ -14,6 +14,7 @@ from schemas.group import (
     GroupPostOut,
     GetGroupPostById,
     GetGroupPostByHeader,
+    GroupPostUpd,
 )
 
 
@@ -113,7 +114,7 @@ class GroupRepository:
         return result
 
     async def update_group_post(
-        self, cmd: GroupPostIn, post_id: GetGroupPostById
+        self, cmd: GroupPostUpd, post_id: GetGroupPostById
     ) -> GroupPostOut | None:
         stmt = (
             update(self.model_post)

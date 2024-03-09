@@ -33,16 +33,19 @@ class GetGroupPostByHeader(BaseModel):
     header: str
 
 
-class GroupPostIn(GetGroupPostByHeader):
+class GroupPostUpd(GetGroupPostByHeader):
     hashtag: str
     body: str
-    group_author: UUID
 
     @field_validator("hashtag")
     def check_hashtag(cls, data):
         if data.startswith("#"):
             return data
         raise ValueError("Hashtag must starts with '#'")
+
+
+class GroupPostIn(GroupPostUpd):
+    group_author: UUID
 
 
 class GroupPostOut(GetGroupPostById, GroupPostIn):

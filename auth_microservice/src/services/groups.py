@@ -10,9 +10,17 @@ from schemas.group import (
     GroupOut,
     GroupIn,
     GroupUpdateIn,
+    GroupPostIn,
+    GroupPostOut,
+    GetGroupPostById,
+    GroupPostUpd,
 )
 from services.cache_service import CacheService
-from utils.exceptions.group_exceptions import GroupNotFound, GroupAlreadyExist
+from utils.exceptions.group_exceptions import (
+    GroupNotFound,
+    GroupAlreadyExist,
+    GroupPostNotFound,
+)
 
 
 class GroupService:
@@ -51,6 +59,13 @@ class GroupService:
         except (UniqueViolationError, IntegrityError):
             raise GroupAlreadyExist
 
+    async def create_group_post(self, cmd: GroupPostIn) -> GroupPostOut:
+        try:
+            answer = await self.group_repo.create_group_post(cmd=cmd)
+            return answer
+        except (UniqueViolationError, IntegrityError):
+            raise GroupPostNotFound
+
     async def edit_group(
         self, cmd: GroupUpdateIn, group_id: GroupSearchById
     ) -> GroupOut:
@@ -60,9 +75,23 @@ class GroupService:
         await self.cache_repo.create_cache("created_group", value=answer)
         return answer
 
+    async def edit_group_post(
+        self, cmd: GroupPostUpd, group_id: GetGroupPostById
+    ) -> GroupPostOut:
+        if not self.group_repo.get_group_post_by_id(cmd=group_id):
+            raise GroupNotFound
+        answer = await self.group_repo.update_group_post(cmd=cmd, post_id=group_id)
+        return answer
+
     async def drop_group(self, cmd: GroupSearchById) -> GroupOut:
         if not self.search_group_by_title(cmd=GroupSearchByTitle(title=cmd.title)):
             raise GroupNotFound
         answer = await self.group_repo.delete_group(cmd=cmd)
         await self.cache_repo.delete_cache("created_group")
+        return answer
+
+    async def drop_group_post(self, cmd: GetGroupPostById) -> GroupPostOut:
+        if not self.search_group_by_id(cmd=GroupSearchById(id=cmd.id)):
+            raise GroupNotFound
+        answer = await self.group_repo.delete_group_post(cmd=cmd)
         return answer
