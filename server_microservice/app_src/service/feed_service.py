@@ -46,10 +46,12 @@ class FeedService:
         return result
 
     async def make_feed(self) -> dict:
-        result = {"Articles": await self.get_list_articles(),
-                  "Users and profiles": await self.get_data_from_auth_service(),
-                  "Events": await self.get_list_events(),
-                  "Guests": await self.get_list_guest(),
-                  "Tickets": await self.get_list_tick()}
+        result = {
+            "Articles": await self.get_list_articles(),
+            "Users and profiles": await self.get_data_from_auth_service(),
+            "Events": await self.get_list_events(),
+            "Guests": await self.get_list_guest(),
+            "Tickets": await self.get_list_tick(),
+        }
         await self.cacher.create_cache(self._key, result)
         return result

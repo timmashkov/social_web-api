@@ -54,8 +54,11 @@ services:
     container_name: sw_rabbitmq
     env_file:
       - .env_prod
+    expose:
+      - 1234
     ports:
-      - "5672:5672"
+      - "1234:1234"
+      - "11234:11234"
     healthcheck:
       test: rabbitmq-diagnostics -q ping
       interval: 10s
@@ -64,36 +67,36 @@ services:
 
   auth_service:
     build:
-      context: ..
+      context: ./auth_microservice
       dockerfile: Dockerfile
     env_file:
       - .env_prod
-    container_name: main_app
+    container_name: auth_service
     command: sh -c "chmod +x /auth_microservice/docker/start_app.sh && /auth_microservice/docker/start_app.sh"
     ports:
-      - "8814:8000"
+      - "3333:3333"
     depends_on:
       auth_database:
         condition: service_healthy
-      auth_redis:
+      sw_rabbitmq:
         condition: service_healthy
-      auth_rabbitmq:
+      sw_redis:
         condition: service_healthy
 
   server_service:
     build:
-      context: ..
+      context: ./server_microservice
       dockerfile: Dockerfile
     env_file:
-      - .env_prod
-    container_name: main_app
+      - .env_prod_1
+    container_name: server_service
     command: sh -c "chmod +x /server_microservice/docker/start_app.sh && /server_microservice/docker/start_app.sh"
     ports:
-      - "2222:8000"
+      - "2222:2222"
     depends_on:
       server_database:
         condition: service_healthy
-      sw_redis:
-        condition: service_healthy
       sw_rabbitmq:
+        condition: service_healthy
+      sw_redis:
         condition: service_healthy

@@ -2,4 +2,6 @@
 
 alembic upgrade head
 
-uvicorn runner:app --host 0.0.0.0 --port 8000 --reload
+cd src/
+
+uvicorn main:start_app --host 0.0.0.0 --port 3333 --reload
