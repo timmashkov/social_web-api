@@ -2,7 +2,7 @@ from configuration.core.database import connector
 
 from sqlalchemy import select
 
-from models import Profile, Group
+from models import Profile, Group, User
 
 
 async def get_profiles():
@@ -17,6 +17,15 @@ async def get_profiles():
 async def get_groups():
     async with connector.engine.connect() as session:
         stmt = select(Group).order_by(Group.id)
+        answer = await session.execute(stmt)
+        result = answer.mappings().all()
+        data = [dict(row) for row in result]
+        return data
+
+
+async def get_users():
+    async with connector.engine.connect() as session:
+        stmt = select(User).order_by(User.id)
         answer = await session.execute(stmt)
         result = answer.mappings().all()
         data = [dict(row) for row in result]
