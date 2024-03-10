@@ -2,7 +2,9 @@ from uuid import UUID
 
 from pydantic import BaseModel, field_validator
 
-__all__ = ("GetGuestById", "GuestUpdate", "GuestIn", "GuestOut")
+__all__ = ("GetGuestById", "GuestUpdate", "GuestIn", "GuestOut", "GuestWithTicket")
+
+from domain.tickets.schemas import TicketOut
 
 
 class GetGuestById(BaseModel):
@@ -32,3 +34,7 @@ class GuestIn(GuestUpdate):
 
 class GuestOut(GuestIn, GetGuestById):
     pass
+
+
+class GuestWithTicket(GuestOut):
+    tickets: list[TicketOut]

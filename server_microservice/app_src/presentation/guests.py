@@ -2,7 +2,13 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
-from domain.guests.schema import GetGuestById, GuestOut, GuestIn, GuestUpdate
+from domain.guests.schema import (
+    GetGuestById,
+    GuestOut,
+    GuestIn,
+    GuestUpdate,
+    GuestWithTicket,
+)
 from infrastructure.database.models import Guest
 from service import GuestService
 
@@ -19,6 +25,13 @@ async def show_guest(
     guest_id: UUID, guest_repo: GuestService = Depends(GuestService)
 ) -> GuestOut:
     return await guest_repo.get_guest_by_id(cmd=GetGuestById(id=guest_id))
+
+
+@guest_router.get("/full/{guest_id}", response_model=GuestWithTicket)
+async def show_guest_with_ticket(
+    guest_id: UUID, guest_repo: GuestService = Depends(GuestService)
+) -> GuestWithTicket:
+    return await guest_repo.get_guest_ticket(cmd=GetGuestById(id=guest_id))
 
 
 @guest_router.post("/invite", response_model=GuestOut)

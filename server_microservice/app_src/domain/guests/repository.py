@@ -1,9 +1,16 @@
 from fastapi import Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from sqlalchemy import select, insert, update, delete
 
-from domain.guests.schema import GetGuestById, GuestOut, GuestIn, GuestUpdate
+from domain.guests.schema import (
+    GetGuestById,
+    GuestOut,
+    GuestIn,
+    GuestUpdate,
+    GuestWithTicket,
+)
 from infrastructure.database.models import Guest
 from infrastructure.database.session import connector
 
@@ -65,4 +72,14 @@ class GuestRepository:
         answer = await self.session.execute(stmt)
         await self.session.commit()
         result = answer.mappings().first()
+        return result
+
+    async def get_guest_with_ticket(self, cmd: GetGuestById) -> GuestWithTicket | None:
+        stmt = (
+            select(self.model)
+            .options(selectinload(self.model.tickets))
+            .where(self.model.id == cmd.id)
+        )
+        answer = await self.session.execute(stmt)
+        result = answer.unique().scalar_one_or_none()
         return result

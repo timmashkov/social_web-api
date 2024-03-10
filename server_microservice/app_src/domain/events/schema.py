@@ -3,7 +3,16 @@ from uuid import UUID
 
 from pydantic import BaseModel, field_validator
 
-__all__ = ("GetEventById", "GetEventByName", "EventUpd", "EventIn", "EventOut")
+from domain.guests.schema import GuestWithTicket
+
+__all__ = (
+    "GetEventById",
+    "GetEventByName",
+    "EventUpd",
+    "EventIn",
+    "EventOut",
+    "FullEventData",
+)
 
 
 class GetEventById(BaseModel):
@@ -30,3 +39,7 @@ class EventOut(EventIn, GetEventById):
     @field_validator("last_time")
     def days_count(cls, data):
         return f"{int(data) // 3600} days"
+
+
+class FullEventData(EventOut):
+    guests: list[GuestWithTicket]

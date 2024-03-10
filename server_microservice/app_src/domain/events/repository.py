@@ -1,6 +1,7 @@
 from fastapi import Depends
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy import select, insert, update, delete
 
 from domain.events.schema import (
@@ -9,8 +10,9 @@ from domain.events.schema import (
     GetEventByName,
     EventIn,
     EventUpd,
+    FullEventData,
 )
-from infrastructure.database.models import Event
+from infrastructure.database.models import Event, Guest, Ticket
 from infrastructure.database.session import connector
 
 
@@ -92,4 +94,14 @@ class EventRepository:
         answer = await self.session.execute(stmt)
         await self.session.commit()
         result = answer.mappings().first()
+        return result
+
+    async def get_full_event(self, cmd: GetEventById) -> FullEventData | None:
+        stmt = (
+            select(Event)
+            .options(selectinload(Event.guests).options(joinedload(Guest.tickets)))
+            .where(Event.id == cmd.id)
+        )
+        answer = await self.session.execute(stmt)
+        result = answer.unique().scalar_one_or_none()
         return result

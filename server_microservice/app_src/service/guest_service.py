@@ -1,5 +1,11 @@
 from domain.guests.repository import GuestRepository
-from domain.guests.schema import GetGuestById, GuestOut, GuestIn, GuestUpdate
+from domain.guests.schema import (
+    GetGuestById,
+    GuestOut,
+    GuestIn,
+    GuestUpdate,
+    GuestWithTicket,
+)
 
 from fastapi import Depends
 
@@ -39,7 +45,12 @@ class GuestService:
         raise GuestNotFound
 
     async def del_guest(self, cmd: GetGuestById) -> GuestOut:
-        if not await self.get_guest_by_id(cmd=cmd):
+        if await self.get_guest_by_id(cmd=cmd):
             answer = await self.repository.delete_guest(cmd=cmd)
             return answer
+        raise GuestNotFound
+
+    async def get_guest_ticket(self, cmd: GetGuestById) -> GuestWithTicket:
+        if await self.get_guest_by_id(cmd=cmd):
+            return await self.repository.get_guest_with_ticket(cmd=cmd)
         raise GuestNotFound

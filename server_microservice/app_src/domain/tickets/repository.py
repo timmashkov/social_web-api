@@ -3,7 +3,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, insert, update, delete
 
-from domain.tickets.schemas import GetTicketId, TicketOut, TicketIn
+from domain.tickets.schemas import GetTicketId, TicketOut, TicketIn, TicketUpd
 from infrastructure.database.models import Ticket
 from infrastructure.database.session import connector
 
@@ -46,7 +46,9 @@ class TicketRepository:
         result = answer.mappings().first()
         return result
 
-    async def update_ticket(self, cmd: TicketIn, data: GetTicketId) -> TicketOut | None:
+    async def update_ticket(
+        self, cmd: TicketUpd, data: GetTicketId
+    ) -> TicketOut | None:
         stmt = (
             update(self.model)
             .where(self.model.id == data.id)

@@ -5,6 +5,7 @@ from domain.events.schema import (
     GetEventByName,
     EventIn,
     EventUpd,
+    FullEventData,
 )
 
 from fastapi import Depends
@@ -44,11 +45,16 @@ class EventService:
             raise EventAlreadyExist
 
     async def change_event(self, cmd: EventUpd, data: GetEventById) -> EventOut:
-        if self.get_event_by_id(cmd=data):
+        if await self.get_event_by_id(cmd=data):
             return await self.repository.update_event(data=cmd, cmd=data)
         raise EventNotFound
 
     async def delete_event(self, cmd: GetEventById) -> EventOut:
-        if self.get_event_by_id(cmd=cmd):
+        if await self.get_event_by_id(cmd=cmd):
             return await self.repository.delete_event(cmd=cmd)
+        raise EventNotFound
+
+    async def get_full_event(self, cmd: GetEventById) -> FullEventData:
+        if await self.get_event_by_id(cmd=cmd):
+            return await self.repository.get_full_event(cmd=cmd)
         raise EventNotFound
