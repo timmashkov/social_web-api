@@ -24,6 +24,7 @@ class UserService:
         self.user_repo = user_repo
         self.auth_repo = auth_repo
         self.cache_repo = cache_repo
+        self._key = str(self.__class__)
 
     async def add_user(self, data: UserIn) -> UserOut:
         try:
@@ -31,7 +32,7 @@ class UserService:
                 password=data.password, salt=data.login
             )
             await self.cache_repo.create_cache(
-                "created_user",
+                self._key,
                 value=UserIn(
                     login=data.login,
                     password=salted_pass,
@@ -55,20 +56,20 @@ class UserService:
 
     async def get_users(self) -> list[User]:
         answer = await self.user_repo.get_all()
-        await self.cache_repo.read_cache("created_user")
+        await self.cache_repo.read_cache(self._key)
         return answer
 
     async def get_user(self, user_id: UUID) -> UserOut:
         answer = await self.user_repo.get_user_by_id(user_id=user_id)
         if answer:
-            await self.cache_repo.read_cache("created_user")
+            await self.cache_repo.read_cache(self._key)
             return answer
         raise UserNotFound
 
     async def change_user(self, data: UserIn, user_id: UUID) -> UserOut:
         if await self.user_repo.get_user_by_id(user_id=user_id):
             await self.cache_repo.create_cache(
-                "created_user",
+                self._key,
                 value=UserIn(
                     login=data.login,
                     password=data.password,
@@ -83,7 +84,7 @@ class UserService:
 
     async def drop_user(self, user_id: UUID) -> dict[str:str]:
         if await self.user_repo.get_user_by_id(user_id=user_id):
-            await self.cache_repo.delete_cache("created_user")
+            await self.cache_repo.delete_cache(self._key)
             answer = await self.user_repo.delete_user(user_id=user_id)
             return answer
         raise UserNotFound

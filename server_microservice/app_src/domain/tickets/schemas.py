@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, field_validator, Field
 
-__all__ = ("GetTicketId", "TicketIn", "TicketOut")
+__all__ = ("GetTicketId", "TicketIn", "TicketOut", "TicketUpd")
 
 
 class TicketExample:

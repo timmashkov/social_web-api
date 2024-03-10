@@ -42,23 +42,25 @@ class ProfileService:
     ):
         self.prof_repo = prof_repo
         self.cache_repo = cache_repo
+        self._key = str(self.__class__)
 
     async def get_profiles(self) -> list[Profile]:
         answer = await self.prof_repo.get_all()
-        await self.cache_repo.read_cache("created_profile")
+        await self.cache_repo.read_cache(self._key)
         return answer
 
     async def get_profile_by_id(self, profile_id: UUID) -> ProfileOut:
         answer = await self.prof_repo.get_profile_by_id(profile_id=profile_id)
         if not answer:
             raise ProfileNotFound
-        await self.cache_repo.read_cache("created_profile")
+        await self.cache_repo.read_cache(self._key)
         return answer
 
     async def get_profile_post_id(self, post_id: GetProfilePostById) -> ProfilePostOut:
         answer = await self.prof_repo.get_profile_post_by_id(post_id=post_id)
         if not answer:
             raise ProfilePostNotFound
+        await self.cache_repo.read_cache(self._key)
         return answer
 
     async def get_profile_post_title(
@@ -67,12 +69,13 @@ class ProfileService:
         answer = await self.prof_repo.get_profile_post_by_title(post_title=post_title)
         if not answer:
             raise ProfilePostNotFound
+        await self.cache_repo.read_cache(self._key)
         return answer
 
     async def add_profile(self, data: ProfileIn) -> ProfileOut:
         try:
             answer = await self.prof_repo.create_profile(data=data)
-            await self.cache_repo.create_cache("created_profile", value=data)
+            await self.cache_repo.create_cache(self._key, value=data)
             return answer
         except (UniqueViolationError, IntegrityError):
             raise ProfileAlreadyExist
@@ -80,6 +83,7 @@ class ProfileService:
     async def add_profile_post(self, data: ProfilePostIn) -> ProfilePostOut:
         try:
             answer = await self.prof_repo.create_profile_post(data=data)
+            await self.cache_repo.create_cache(self._key, value=data)
             return answer
         except (UniqueViolationError, IntegrityError):
             raise ProfilePostAlreadyExist
@@ -88,7 +92,7 @@ class ProfileService:
         self, data: ProfileUpdateIn, profile_id: UUID
     ) -> ProfileOut:
         if await self.prof_repo.get_profile_by_id(profile_id=profile_id):
-            await self.cache_repo.update_cache("created_profile", value=data)
+            await self.cache_repo.update_cache(self._key, value=data)
             return await self.prof_repo.update_profile(data=data, profile_id=profile_id)
         raise ProfileNotFound
 
@@ -96,17 +100,19 @@ class ProfileService:
         self, data: ProfilePostIn, post_id: GetProfilePostById
     ) -> ProfilePostOut:
         if await self.prof_repo.get_profile_post_by_id(post_id=post_id):
+            await self.cache_repo.update_cache(self._key, value=data)
             return await self.prof_repo.update_profile_post(data=data, post_id=post_id)
         raise ProfilePostNotFound
 
     async def drop_profile(self, profile_id: UUID) -> dict[str:str]:
         if await self.prof_repo.get_profile_by_id(profile_id=profile_id):
-            await self.cache_repo.delete_cache("created_profile")
+            await self.cache_repo.delete_cache(self._key)
             return await self.prof_repo.delete_profile(profile_id=profile_id)
         raise ProfileNotFound
 
     async def drop_profile_post(self, post_id: GetProfilePostById) -> dict[str:str]:
         if await self.prof_repo.get_profile_post_by_id(post_id=post_id):
+            await self.cache_repo.delete_cache(self._key)
             return await self.prof_repo.delete_profile_post(post_id=post_id)
         raise ProfilePostNotFound
 
