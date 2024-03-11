@@ -1,3 +1,5 @@
 **/__pycache__/
 /.idea/
 **/.gitignore/
+*.env_prod
+*.env_prod_1
