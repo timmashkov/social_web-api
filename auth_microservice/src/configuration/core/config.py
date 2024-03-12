@@ -10,7 +10,7 @@ load_dotenv()
 class DevConfig(BaseSettings):
     """Конфиг со всеми чувствительными данными"""
 
-    # apllication mode
+    # application mode
     mode: Literal["DEV", "TEST", "PROD"]
     # main database
     DB_HOST: str = os.environ.get("DB_HOST")
