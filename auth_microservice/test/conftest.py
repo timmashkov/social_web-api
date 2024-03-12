@@ -1,5 +1,5 @@
 import asyncio
-from typing import AsyncGenerator, Callable
+from typing import AsyncGenerator, Callable, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +8,6 @@ import pytest
 
 from configuration.core.database import test_connector, connector
 from configuration.server import ApiServer
-from main import start_app
 from models import Base
 
 from httpx import AsyncClient
@@ -22,6 +21,7 @@ async def override_session_dependency() -> AsyncGenerator[AsyncSession, None]:
     session = test_connector.session_fabric()
     async with session as sess:
         yield sess
+        await sess.close()
 
 
 app.dependency_overrides[connector.scoped_session] = override_session_dependency
@@ -50,10 +50,15 @@ def event_loop(request):
     res._close()
 
 
-@pytest_asyncio.fixture(scope='function')
+@pytest_asyncio.fixture(scope="session")
 async def client() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url='http://test') as ac:
+    async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture(scope="module")
+def saved_data() -> dict[str, Any]:
+    return {}
 
 
 def get_routes() -> dict[str, str]:
