@@ -1,8 +1,5 @@
-import json
-from dataclasses import asdict
-from typing import Any
-
-from sqlalchemy.orm import DeclarativeMeta
+import re
+from uuid import UUID
 
 from pydantic.v1.utils import update_not_none
 from pydantic.v1.validators import constr_length_validator
@@ -33,3 +30,8 @@ class NotEmptyStr(str):
 
     def __repr__(self) -> str:
         return f"NotEmptyStr('{self}')"
+
+
+def clean_and_validate_uuid(s):
+    s = re.sub(r"[^a-fA-F0-9-]", "", s)
+    return s

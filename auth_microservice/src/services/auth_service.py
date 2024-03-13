@@ -12,6 +12,7 @@ from schemas.auth import (
 from services.auth_handler import AuthHandler
 from utils.exceptions.auth_exceptions import Unauthorized
 from utils.exceptions.user_exceptions import UserNotFound, WrongPassword
+from utils.handys.str_helper import clean_and_validate_uuid
 
 auth = AuthHandler()
 
@@ -41,17 +42,21 @@ class AuthService:
 
     async def logout(self, refresh_token):
         user_id = auth.decode_refresh_token(refresh_token)
-        token = await self.repository.get_token(cmd=user_id[1:-1])
+        token = await self.repository.get_token(cmd=clean_and_validate_uuid(user_id))
         if not token:
             raise Unauthorized
         if token == refresh_token:
-            result = await self.repository.delete_token(cmd=user_id[1:-1])
+            result = await self.repository.delete_token(
+                cmd=clean_and_validate_uuid(user_id)
+            )
             return result
         raise Unauthorized
 
     async def is_auth(self, refresh_token):
         user_id = auth.decode_token(refresh_token)
-        exist_token = await self.repository.get_token(cmd=user_id[1:-1])
+        exist_token = await self.repository.get_token(
+            cmd=clean_and_validate_uuid(user_id)
+        )
         if not exist_token:
             raise Unauthorized
         try:
@@ -64,17 +69,20 @@ class AuthService:
 
     async def refresh_token(self, refresh_token):
         user_id = auth.decode_refresh_token(refresh_token)
-        exist_token = await self.repository.get_token(cmd=user_id[1:-1])
+        exist_token = await self.repository.get_token(
+            cmd=clean_and_validate_uuid(user_id)
+        )
         if not exist_token:
             raise Unauthorized
         else:
             if exist_token == refresh_token:
                 new_token = auth.refresh_token(refresh_token=refresh_token)
-                print(new_token)
                 await self.repository.update_token(
-                    data=UserJwtToken(id=user_id[1:-1], token=new_token.access_token)
+                    data=UserJwtToken(
+                        id=clean_and_validate_uuid(user_id),
+                        token=new_token.refresh_token,
+                    )
                 )
-
                 return UserRefreshToken(
                     access_token=new_token.access_token,
                     refresh_token=new_token.refresh_token,

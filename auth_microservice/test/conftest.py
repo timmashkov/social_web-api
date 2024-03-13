@@ -3,7 +3,8 @@ from typing import AsyncGenerator, Callable, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import pytest_asyncio
+from configuration.core.config import base_config
+from redis import asyncio as aioredis
 import pytest
 
 from configuration.core.database import test_connector, connector
@@ -11,6 +12,8 @@ from configuration.server import ApiServer
 from models import Base
 
 from httpx import AsyncClient
+
+from services.cache_service import CacheService
 
 app = ApiServer.app_auth
 
@@ -21,7 +24,6 @@ async def override_session_dependency() -> AsyncGenerator[AsyncSession, None]:
     session = test_connector.session_fabric()
     async with session as sess:
         yield sess
-        await sess.close()
 
 
 app.dependency_overrides[connector.scoped_session] = override_session_dependency
@@ -39,21 +41,21 @@ async def prepare_database():
 @pytest.fixture(scope="session")
 def event_loop(request):
     """Create an instance of the default event loop for each test case."""
-    policy = asyncio.WindowsSelectorEventLoopPolicy()
-    res = policy.new_event_loop()
-    asyncio.set_event_loop(res)
-    res._close = res.close
-    res.close = lambda: None
-
-    yield res
-
-    res._close()
+    loop = asyncio.get_event_loop_policy().new_event_loop()
+    yield loop
+    loop.close()
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest.fixture(scope="session")
 async def client() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
+
+
+@pytest.fixture(scope="session")
+async def cache_operations(event_loop):
+    service = CacheService()
+    yield service
 
 
 @pytest.fixture(scope="module")
