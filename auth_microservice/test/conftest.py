@@ -5,13 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import pytest
 
+from configuration.core.config import base_config
 from configuration.core.database import test_connector, connector
 from configuration.server import ApiServer
 from models import Base
 
 from httpx import AsyncClient
-
-from services.cache_service import CacheService
 
 
 app = ApiServer.app_auth
@@ -38,10 +37,28 @@ async def prepare_database():
 
 
 @pytest.fixture(scope="function")
-async def cache_operations(event_loop):
-    service = CacheService()
-    yield service
-    await service.close_connections()
+async def cache_operations():
+    import pickle
+    from fakeredis import FakeRedis
+
+    class CacheRepo:
+        def __init__(self):
+            self.cacher = FakeRedis()
+
+        async def create_cache(self, key, value):
+            await self.cacher.set(key, pickle.dumps(value), ex=base_config.EXPIRATION)
+
+        async def read_cache(self, key):
+            return await self.cacher.get(key)
+
+        async def update_cache(self, key, value):
+            await self.cacher.set(key, pickle.dumps(value), ex=base_config.EXPIRATION)
+
+        async def delete_cache(self, key):
+            await self.cacher.delete(key)
+
+    cache = CacheRepo()
+    yield cache
 
 
 @pytest.fixture(autouse=True, scope="session")
