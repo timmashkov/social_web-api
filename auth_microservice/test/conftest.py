@@ -3,8 +3,6 @@ from typing import AsyncGenerator, Callable, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from configuration.core.config import base_config
-from redis import asyncio as aioredis
 import pytest
 
 from configuration.core.database import test_connector, connector
@@ -14,6 +12,7 @@ from models import Base
 from httpx import AsyncClient
 
 from services.cache_service import CacheService
+
 
 app = ApiServer.app_auth
 
@@ -38,8 +37,15 @@ async def prepare_database():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture(scope="session")
-def event_loop(request):
+@pytest.fixture(scope="function")
+async def cache_operations(event_loop):
+    service = CacheService()
+    yield service
+    await service.close_connections()
+
+
+@pytest.fixture(autouse=True, scope="session")
+def event_loop():
     """Create an instance of the default event loop for each test case."""
     loop = asyncio.get_event_loop_policy().new_event_loop()
     yield loop
@@ -50,12 +56,6 @@ def event_loop(request):
 async def client() -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
-
-
-@pytest.fixture(scope="session")
-async def cache_operations(event_loop):
-    service = CacheService()
-    yield service
 
 
 @pytest.fixture(scope="module")

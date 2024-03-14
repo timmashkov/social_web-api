@@ -22,3 +22,7 @@ class CacheService:
 
     async def delete_cache(self, key):
         await self.cacher.delete(key)
+
+    async def close_connections(self):
+        await self.cacher.aclose()
+        await self.redis_pool.disconnect()

@@ -80,5 +80,12 @@ class TestAuth:
         assert "id" in response.json()
         assert "token" in response.json()
         assert response.json()["token"] == ""
-        saved_data["auth"] = response.json()
+        del saved_data["auth"]
 
+    @pytest.mark.asyncio
+    async def test_delete_user_auth(self, client: AsyncClient, saved_data, cache_operations):
+        user = saved_data["user"]
+        response = await client.delete(reverse(delete_user, user_id=user["id"]))
+        assert response.json()["message"] == f"User №{user["id"]} has been deleted"
+        del saved_data["user"]
+        assert saved_data == {}
