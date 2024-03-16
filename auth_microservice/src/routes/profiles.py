@@ -64,7 +64,7 @@ async def show_full(
     return await profile_repo.get_profile_full(profile_id=profile_id)
 
 
-@profile_router.get("/{post_id}", response_model=ProfilePostOut)
+@profile_router.get("/show/{post_id}", response_model=ProfilePostOut)
 async def show_profile_post(
     post_id: UUID, profile_repo: ProfileService = PROFILES
 ) -> ProfilePostOut:
@@ -94,7 +94,7 @@ async def patch_profile(
     return await profile_repo.change_profile(data=data, profile_id=profile_id)
 
 
-@profile_router.patch("/{post_id}", response_model=ProfilePostOut)
+@profile_router.patch("/upd/{post_id}", response_model=ProfilePostOut)
 async def patch_profile_post(
     post_id: UUID, data: ProfilePostIn, profile_repo: ProfileService = PROFILES
 ) -> ProfilePostOut:
@@ -103,14 +103,14 @@ async def patch_profile_post(
     )
 
 
-@profile_router.delete("/{profile_id}", response_model=None)
+@profile_router.delete("/del/{profile_id}", response_model=None)
 async def del_profile(
     profile_id: UUID, profile_repo: ProfileService = PROFILES
 ) -> dict[str, str]:
     return await profile_repo.drop_profile(profile_id=profile_id)
 
 
-@profile_router.delete("/{post_id}", response_model=None)
+@profile_router.delete("/del_post/{post_id}", response_model=None)
 async def del_profile_post(
     post_id: UUID, profile_repo: ProfileService = PROFILES
 ) -> dict[str, str]:

@@ -36,10 +36,10 @@ async def prepare_database():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture(scope="function")
-async def cache_operations():
+@pytest.fixture(scope="function", autouse=True)
+def cache_operations():
     import pickle
-    from fakeredis import FakeRedis
+    from fakeredis import FakeAsyncRedis, FakeStrictRedis, FakeRedis
 
     class CacheRepo:
         def __init__(self):
