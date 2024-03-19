@@ -4,7 +4,7 @@ from http import HTTPStatus
 import pytest
 
 from .conftest import reverse
-from routes.users import show_users, registration, patch_user, show_user, delete_user
+from routes.users import show_users, registration, show_user, delete_user
 from routes.auth import login_user, logout_user, refresh_user_token, check_auth
 
 

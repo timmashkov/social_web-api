@@ -88,7 +88,7 @@ class GroupService:
         return answer
 
     async def drop_group(self, cmd: GroupSearchById) -> GroupOut:
-        if not self.search_group_by_title(cmd=GroupSearchByTitle(title=cmd.title)):
+        if not self.search_group_by_id(cmd=GroupSearchById(id=cmd.id)):
             raise GroupNotFound
         answer = await self.group_repo.delete_group(cmd=cmd)
         await self.cache_repo.delete_cache(self._key)

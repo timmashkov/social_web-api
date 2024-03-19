@@ -26,7 +26,7 @@ async def override_session_dependency() -> AsyncGenerator[AsyncSession, None]:
 app.dependency_overrides[connector.scoped_session] = override_session_dependency
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(scope="session")
 def event_loop():
     """Create an instance of the default event loop for each test case."""
     try:

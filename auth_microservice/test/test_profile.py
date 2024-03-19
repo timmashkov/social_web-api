@@ -20,7 +20,7 @@ from routes.users import registration, show_user, delete_user
 from .conftest import reverse
 
 
-class TestUser:
+class TestProfile:
     @pytest.mark.asyncio
     async def test_show_empty_profiles(self, client: AsyncClient):
         response = await client.get(reverse(show_profiles))

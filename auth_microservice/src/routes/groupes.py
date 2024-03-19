@@ -74,6 +74,6 @@ async def del_group(group_id: UUID, group_repo: GroupService = GROUPS) -> GroupO
     return await group_repo.drop_group(cmd=GroupSearchById(id=group_id))
 
 
-@group_router.delete("/delete_post/{group_id}", response_model=GroupPostOut)
-async def del_group(group_id: UUID, group_repo: GroupService = GROUPS) -> GroupPostOut:
-    return await group_repo.drop_group_post(cmd=GetGroupPostById(id=group_id))
+@group_router.delete("/delete_post/{post_id}", response_model=GroupPostOut)
+async def del_group_post(post_id: UUID, group_repo: GroupService = GROUPS) -> GroupPostOut:
+    return await group_repo.drop_group_post(cmd=GetGroupPostById(id=post_id))
