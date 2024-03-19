@@ -66,7 +66,8 @@ class TestAuth:
     @pytest.mark.asyncio
     async def test_refresh_user_token(self, client: AsyncClient, saved_data):
         auth = saved_data["auth"]
-        response = await client.get(reverse(refresh_user_token), headers={"Authorization": f"Bearer {auth["refresh_token"]}"})
+        response = await client.get(reverse(refresh_user_token), headers={"Authorization":
+                                                                              f"Bearer {auth["refresh_token"]}"})
         assert response.status_code == HTTPStatus.OK
         assert "access_token" in response.json()
         assert "refresh_token" in response.json()
